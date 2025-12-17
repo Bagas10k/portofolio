@@ -16,31 +16,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Get image path first to delete file
-    $stmt = $conn->prepare("SELECT image FROM projects WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    if (!file_exists(PROJECTS_FILE)) {
+        echo json_encode(['success' => false, 'message' => 'Project file not found']);
+        exit;
+    }
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        
-        // Delete from DB
-        $delParams = $conn->prepare("DELETE FROM projects WHERE id = ?");
-        $delParams->bind_param("i", $id);
-        
-        if ($delParams->execute()) {
-            // Delete file
-            if ($row['image'] && file_exists('../' . $row['image'])) {
-                unlink('../' . $row['image']);
-            }
+    $json_content = file_get_contents(PROJECTS_FILE);
+    $projects = json_decode($json_content, true) ?? [];
+    
+    $foundIndex = -1;
+    $projectToDelete = null;
+
+    // Find project by ID
+    foreach ($projects as $index => $project) {
+        if ($project['id'] == $id) {
+            $foundIndex = $index;
+            $projectToDelete = $project;
+            break;
+        }
+    }
+
+    if ($foundIndex !== -1) {
+        // Delete Image
+        if (!empty($projectToDelete['image'])) {
+             $imagePath = '../' . $projectToDelete['image'];
+             if (file_exists($imagePath)) {
+                 unlink($imagePath);
+             }
+        }
+
+        // Remove from Array
+        array_splice($projects, $foundIndex, 1);
+
+        // Save back to JSON
+        if (file_put_contents(PROJECTS_FILE, json_encode($projects, JSON_PRETTY_PRINT))) {
             echo json_encode(['success' => true]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'DB Error']);
+            echo json_encode(['success' => false, 'message' => 'Failed to save changes']);
         }
+
     } else {
-        echo json_encode(['success' => false, 'message' => 'Project not found']);
+        echo json_encode(['success' => false, 'message' => 'Project not found with ID: ' . $id]);
     }
 }
-$conn->close();
 ?>

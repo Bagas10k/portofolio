@@ -12,6 +12,7 @@ define('ADMIN_PASSWORD', 'Bagassaputra83');
 
 // --- PATHS ---
 define('UPLOAD_DIR', '../assets/images/projects/');
+define('PROJECTS_FILE', '../data/projects.json');
 
 // --- HEADERS & SECURITY ---
 // Disable error printing to avoid breaking JSON

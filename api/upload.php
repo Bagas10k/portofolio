@@ -10,8 +10,14 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'] ?? '';
     $desc = $_POST['desc'] ?? '';
-    $tags = $_POST['tags'] ?? ''; // Kept as string
+    $tagsRaw = $_POST['tags'] ?? ''; 
     $link = $_POST['link'] ?? '#';
+    
+    // Parse tags: user might send "tag1, tag2" string
+    // Front end sends string. The JSON stores ARRAY.
+    // So we should explode it here.
+    $tagsArray = $tagsRaw ? array_map('trim', explode(',', $tagsRaw)) : [];
+
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['image']['tmp_name'];
@@ -22,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
         
         if (!is_dir(UPLOAD_DIR)) {
-            // Attempt to create
             if (!mkdir(UPLOAD_DIR, 0777, true)) {
                  echo json_encode(['success' => false, 'message' => 'Failed to create upload folder. Server Permission Denied.']);
                  exit;
@@ -40,8 +45,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // OPTIMIZATION: Resize/Compress Image
         $uploaded = $fileTmpPath;
-        list($width, $height) = getimagesize($uploaded);
-        $max_width = 800; // Resize to max 800px width
+        // Check if getimagesize succeeds
+        $imageInfo = @getimagesize($uploaded);
+        if (!$imageInfo) {
+             echo json_encode(['success' => false, 'message' => 'Invalid image file']);
+             exit;
+        }
+        
+        list($width, $height) = $imageInfo;
+        $max_width = 800; 
+
+        $moved = false;
 
         if ($width > $max_width) {
             $ratio = $max_width / $width;
@@ -49,50 +63,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $new_height = $height * $ratio;
 
             $src = imagecreatefromstring(file_get_contents($uploaded));
-            $dst = imagecreatetruecolor($new_width, $new_height);
-            
-            // Maintain transparency for PNG/WEBP
-            imagealphablending($dst, false);
-            imagesavealpha($dst, true);
+            if ($src) {
+                $dst = imagecreatetruecolor($new_width, $new_height);
+                
+                // Maintain transparency
+                imagealphablending($dst, false);
+                imagesavealpha($dst, true);
 
-            imagecopyresampled($dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-            
-            // Save based on extension
-            switch($fileExtension) {
-                case 'png': imagepng($dst, $dest_path, 8); break; 
-                case 'jpg': case 'jpeg': imagejpeg($dst, $dest_path, 85); break;
-                case 'webp': imagewebp($dst, $dest_path, 85); break;
-                default: move_uploaded_file($uploaded, $dest_path); break; // Fallback
+                imagecopyresampled($dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+                
+                switch($fileExtension) {
+                    case 'png': imagepng($dst, $dest_path, 8); break; 
+                    case 'jpg': case 'jpeg': imagejpeg($dst, $dest_path, 85); break;
+                    case 'webp': imagewebp($dst, $dest_path, 85); break;
+                    default: 
+                        // If standard GD unsupported, try move
+                        imagedestroy($dst); imagedestroy($src);
+                        if(move_uploaded_file($uploaded, $dest_path)) $moved = true;
+                        break;
+                }
+                
+                if (!$moved && file_exists($dest_path)) {
+                    $moved = true; // GD saved it
+                }
+                
+                if (isset($src)) imagedestroy($src);
+                if (isset($dst)) imagedestroy($dst);
+            } else {
+                // GD failed, fallback
+                 if(move_uploaded_file($uploaded, $dest_path)) $moved = true;
             }
-            imagedestroy($src);
-            imagedestroy($dst);
-            $moved = true;
         } else {
-            // No resize needed, just move
-            $moved = move_uploaded_file($uploaded, $dest_path);
+            if(move_uploaded_file($uploaded, $dest_path)) $moved = true;
         }
 
         if($moved) {
+            // Read Existing JSON
+            $projects = [];
+            if (file_exists(PROJECTS_FILE)) {
+                $json_content = file_get_contents(PROJECTS_FILE);
+                $projects = json_decode($json_content, true) ?? [];
+            }
             
-            // Insert into Database
-            $stmt = $conn->prepare("INSERT INTO projects (title, description, image, tags, link) VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssss", $title, $desc, $db_image_path, $tags, $link);
+            // New ID
+            $newId = (string)time(); // simple timestamp ID
             
-            if ($stmt->execute()) {
+            // New Project Object
+            $newProject = [
+                "id" => $newId,
+                "title" => $title,
+                "desc" => $desc,
+                "image" => $db_image_path,
+                "link" => $link,
+                "tags" => $tagsArray
+            ];
+            
+            // Prepend or Append? "ORDER BY id DESC" usually means newest first.
+            // So let's Prepend (unshift)
+            array_unshift($projects, $newProject);
+            
+            // Write to file
+            if (file_put_contents(PROJECTS_FILE, json_encode($projects, JSON_PRETTY_PRINT))) {
                 echo json_encode(['success' => true]);
             } else {
-                // Delete uploaded file if DB insert fails to keep clean
-                unlink($dest_path);
-                echo json_encode(['success' => false, 'message' => 'Database Insert Failed: ' . $stmt->error]);
+                 unlink($dest_path);
+                 echo json_encode(['success' => false, 'message' => 'Failed to write to JSON file']);
             }
-            $stmt->close();
         } else {
             $err = error_get_last();
-            echo json_encode(['success' => false, 'message' => 'Move File Failed. Reason: ' . ($err['message'] ?? 'Unknown')]);
+            echo json_encode(['success' => false, 'message' => 'Move File Failed. ' . ($err['message'] ?? '')]);
         }
     } else {
-        echo json_encode(['success' => false, 'message' => 'No file uploaded']);
+        echo json_encode(['success' => false, 'message' => 'No file uploaded or upload error']);
     }
 }
-$conn->close();
 ?>
