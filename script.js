@@ -146,31 +146,29 @@ async function loadProjects() {
         const res = await fetch('api/get_projects.php?t=' + new Date().getTime());
         const projects = await res.json();
 
-        // Clear placeholder content if we have data
-        if (projects.length > 0) grid.innerHTML = '';
-
-        projects.forEach(project => {
-            const card = document.createElement('article');
-            card.className = 'project-card animate-on-scroll';
-            
-            // Build Tags HTML
-            const tagsHtml = project.tags.map(tag => `<span>${tag}</span>`).join('');
-
-            card.innerHTML = `
-                <div class="project-image">
-                    <img src="${project.image}" alt="${project.title}" class="project-thumb">
-                    <div class="project-overlay">
-                        <a href="${project.link}" class="btn btn-primary btn-sm">View Details</a>
+        if (projects.length > 0) {
+            grid.innerHTML = '';
+            projects.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'project-card animate-on-scroll';
+                card.innerHTML = `
+                    <div class="project-image">
+                        <img src="${p.image}" alt="${p.title}">
                     </div>
-                </div>
-                <div class="project-info">
-                    <h3 class="project-title">${project.title}</h3>
-                    <p class="project-desc">${project.desc}</p>
-                    <div class="project-tags">${tagsHtml}</div>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
+                    <div class="project-content">
+                        <div class="project-tags">
+                            ${(p.tags || []).map(t => `<span>${t}</span>`).join('')}
+                        </div>
+                        <h3 class="project-title">${p.title}</h3>
+                        <p class="project-desc">${p.description}</p>
+                        <a href="${p.link}" class="project-link" target="_blank">View Project <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        } else {
+            grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">No projects found. Add one in the dashboard!</p>';
+        }
 
         // Re-run observer for new elements
         const observer = new IntersectionObserver((entries) => {
