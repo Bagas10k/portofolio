@@ -14,6 +14,10 @@ define('ADMIN_PASSWORD', 'admin123');
 define('UPLOAD_DIR', '../assets/images/projects/');
 
 // --- HEADERS & SECURITY ---
+// Disable error printing to avoid breaking JSON
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
