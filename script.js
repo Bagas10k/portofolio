@@ -211,9 +211,14 @@ async function loadProfile() {
             if(document.getElementById('heroTagline')) document.getElementById('heroTagline').textContent = p.tagline;
 
             // About
-            if(document.getElementById('aboutText')) document.getElementById('aboutText').innerHTML = `<p>${p.about_text.replace(/\n/g, '<br>')}</p>`;
-            if(document.getElementById('statExp')) document.getElementById('statExp').textContent = p.years_exp;
-            if(document.getElementById('statProjects')) document.getElementById('statProjects').textContent = p.projects_count;
+            if(document.getElementById('aboutText') && p.about_text) {
+                document.getElementById('aboutText').innerHTML = `<p>${p.about_text.replace(/\n/g, '<br>')}</p>`;
+            } else if (document.getElementById('aboutText')) {
+                document.getElementById('aboutText').innerHTML = '<p>No bio available.</p>';
+            }
+
+            if(document.getElementById('statExp')) document.getElementById('statExp').textContent = p.years_exp || '0';
+            if(document.getElementById('statProjects')) document.getElementById('statProjects').textContent = p.projects_count || '0';
 
             // Contact
             if(document.getElementById('contactEmail')) {
@@ -239,6 +244,8 @@ async function loadProfile() {
         }
     } catch (e) {
         console.error('Error loading profile:', e);
+        // Optional: display error on screen for easier debugging
+        // if(document.getElementById('aboutText')) document.getElementById('aboutText').innerText = 'Error loading profile: ' + e.message;
     }
 }
 
