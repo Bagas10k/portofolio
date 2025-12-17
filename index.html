@@ -34,9 +34,9 @@
         <section id="home" class="hero">
             <div class="hero-content">
                 <span class="greeting">Hello, I'm</span>
-                <h1 class="glitch-text" data-text="Bagas">Bagas</h1>
-                <h2 class="role">Programmer <span class="accent">&</span> UI/UX Designer</h2>
-                <p class="tagline">Crafting digital experiences where clean code meets modern aesthetics.</p>
+                <h1 class="glitch-text" data-text="Bagas" id="heroName">Loading...</h1>
+                <h2 class="role" id="heroRole">Loading...</h2>
+                <p class="tagline" id="heroTagline">Loading...</p>
                 <div class="cta-group">
                     <a href="#projects" class="btn btn-primary">View Portfolio</a>
                     <a href="#contact" class="btn btn-outline">Contact Me</a>
@@ -54,15 +54,16 @@
                 <h2 class="section-title">About Me</h2>
                 <div class="about-content">
                     <div class="about-text">
-                        <p>I'm a passionate <strong>Programmer</strong> and <strong>UI/UX Designer</strong> based in Indonesia. My journey involves translating complex problems into simple, beautiful, and intuitive designs.</p>
-                        <p>I believe that code is not just about logic; it's about <em>craftsmanship</em>. When I build for the web, I focus on performance, accessibility, and user-centric interactions that leave a lasting impression.</p>
+                        <div id="aboutText">
+                            <p>Loading bio...</p>
+                        </div>
                         <div class="stats-grid">
                             <div class="stat-item">
-                                <span class="stat-number">3+</span>
+                                <span class="stat-number" id="statExp">0+</span>
                                 <span class="stat-label">Years Exp.</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-number">20+</span>
+                                <span class="stat-number" id="statProjects">0+</span>
                                 <span class="stat-label">Projects</span>
                             </div>
                         </div>
@@ -79,45 +80,9 @@
         <section id="skills" class="section animate-on-scroll">
              <div class="container">
                 <h2 class="section-title">Skills & Tech</h2>
-                <div class="skills-grid">
-                    <div class="skill-category">
-                        <h3>Development</h3>
-                        <div class="skill-list">
-                            <div class="skill-card">
-                                <span class="icon">JS</span>
-                                <span>JavaScript (ES6+)</span>
-                            </div>
-                            <div class="skill-card">
-                                <span class="icon">R</span>
-                                <span>React / Next.js</span>
-                            </div>
-                            <div class="skill-card">
-                                <span class="icon">N</span>
-                                <span>Node.js</span>
-                            </div>
-                             <div class="skill-card">
-                                <span class="icon">P</span>
-                                <span>Python</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Design</h3>
-                        <div class="skill-list">
-                            <div class="skill-card">
-                                <span class="icon">Fg</span>
-                                <span>Figma</span>
-                            </div>
-                            <div class="skill-card">
-                                <span class="icon">Ad</span>
-                                <span>Adobe XD</span>
-                            </div>
-                            <div class="skill-card">
-                                <span class="icon">Ui</span>
-                                <span>UI Prototyping</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="skills-grid" id="skillsContainer">
+                    <!-- Dynamic Skills Loaded Here -->
+                    <div style="color:var(--text-secondary)">Loading skills...</div>
                 </div>
             </div>
         </section>
@@ -141,14 +106,12 @@
                     <ul class="contact-details">
                         <li>
                             <span class="label">Email</span>
-                            <a href="mailto:hello@bagas.dev" class="value">hello@bagas.dev</a>
+                            <a href="#" class="value" id="contactEmail">loading...</a>
                         </li>
                         <li>
                             <span class="label">Socials</span>
-                            <div class="social-links">
-                                <a href="#">LinkedIn</a>
-                                <a href="#">GitHub</a>
-                                <a href="#">Dribbble</a>
+                            <div class="social-links" id="contactSocials">
+                                <!-- Dynamic Links -->
                             </div>
                         </li>
                     </ul>

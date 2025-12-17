@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Bagas Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">Bagas<span class="dot">.</span></div>
+            <ul class="admin-menu">
+                <li><a href="dashboard.html">Projects</a></li>
+                <li><a href="skills.html">Skills</a></li>
+                <li><a href="messages.html">Messages</a></li>
+                <li><a href="profile.html" class="active">Profile</a></li>
+                <li style="margin-top: auto;"><a href="../index.html">View Site</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1 class="page-title">Profile Management</h1>
+            
+            <div class="admin-form-card" style="max-width: 800px;">
+                <form id="profileForm" class="contact-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                         <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <input type="text" name="role" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hero Tagline</label>
+                        <textarea name="tagline" rows="2" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>About Me Text</label>
+                        <textarea name="about_text" rows="5" required></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label>Years of Exp.</label>
+                            <input type="text" name="years_exp">
+                        </div>
+                        <div class="form-group">
+                            <label>Completed Projects</label>
+                            <input type="text" name="projects_count">
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin: 20px 0 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Contact & Socials</h3>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label>LinkedIn URL</label>
+                            <input type="url" name="linkedin">
+                        </div>
+                        <div class="form-group">
+                            <label>GitHub URL</label>
+                            <input type="url" name="github">
+                        </div>
+                        <div class="form-group">
+                            <label>Dribbble URL</label>
+                            <input type="url" name="dribbble">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save Changes</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/profile.js"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@ define('ADMIN_PASSWORD', 'admin123');
 define('DATA_FILE', '../data/projects.json');
 define('SKILLS_FILE', '../data/skills.json');
 define('MESSAGES_FILE', '../data/messages.json');
+define('PROFILE_FILE', '../data/profile.json');
 define('UPLOAD_DIR', '../assets/images/projects/');
 
 // Security headers
