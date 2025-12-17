@@ -1,0 +1,26 @@
+[
+    {
+        "id": "1",
+        "title": "E-Commerce Dashboard",
+        "desc": "A comprehensive analytics dashboard for online retailers featuring real-time data visualization.",
+        "image": "assets/images/projects/ecommerce.png",
+        "link": "#",
+        "tags": ["React", "D3.js", "Node.js"]
+    },
+    {
+        "id": "2",
+        "title": "FinTech Mobile App",
+        "desc": "UI/UX design and prototype for a modern banking application focusing on simplicity and security.",
+        "image": "assets/images/projects/fintech.png",
+        "link": "#",
+        "tags": ["Figma", "Prototyping", "UI Design"]
+    },
+    {
+        "id": "3",
+        "title": "AI Content Generator",
+        "desc": "A SaaS platform leveraging AI to help creators generate blog posts and social media captions.",
+        "image": "assets/images/projects/ai-tool.png",
+        "link": "#",
+        "tags": ["Vue.js", "OpenAI API", "Tailwind"]
+    }
+]

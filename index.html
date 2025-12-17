@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bagas | Programmer & UI/UX Designer</title>
+    <meta name="description" content="Portfolio of Bagas, a Creative Programmer & UI/UX Designer specializing in minimalist and tech-forward web experiences.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Bagas<span class="dot">.</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact" class="btn-nav">Contact</a></li>
+        </ul>
+        <div class="mobile-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <span class="greeting">Hello, I'm</span>
+                <h1 class="glitch-text" data-text="Bagas">Bagas</h1>
+                <h2 class="role">Programmer <span class="accent">&</span> UI/UX Designer</h2>
+                <p class="tagline">Crafting digital experiences where clean code meets modern aesthetics.</p>
+                <div class="cta-group">
+                    <a href="#projects" class="btn btn-primary">View Portfolio</a>
+                    <a href="#contact" class="btn btn-outline">Contact Me</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <!-- Abstract geometric tech shape constructed via CSS/SVG later -->
+                <div class="tech-circle"></div>
+            </div>
+        </section>
+
+        <!-- Placeholder sections for structure -->
+        <section id="about" class="section animate-on-scroll">
+            <div class="container about-container">
+                <h2 class="section-title">About Me</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>I'm a passionate <strong>Programmer</strong> and <strong>UI/UX Designer</strong> based in Indonesia. My journey involves translating complex problems into simple, beautiful, and intuitive designs.</p>
+                        <p>I believe that code is not just about logic; it's about <em>craftsmanship</em>. When I build for the web, I focus on performance, accessibility, and user-centric interactions that leave a lasting impression.</p>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-number">3+</span>
+                                <span class="stat-label">Years Exp.</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">20+</span>
+                                <span class="stat-label">Projects</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-image">
+                       <div class="image-frame">
+                            <img src="assets/images/profile/avatar.png" alt="Bagas Profile" class="avatar-image">
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="section animate-on-scroll">
+             <div class="container">
+                <h2 class="section-title">Skills & Tech</h2>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>Development</h3>
+                        <div class="skill-list">
+                            <div class="skill-card">
+                                <span class="icon">JS</span>
+                                <span>JavaScript (ES6+)</span>
+                            </div>
+                            <div class="skill-card">
+                                <span class="icon">R</span>
+                                <span>React / Next.js</span>
+                            </div>
+                            <div class="skill-card">
+                                <span class="icon">N</span>
+                                <span>Node.js</span>
+                            </div>
+                             <div class="skill-card">
+                                <span class="icon">P</span>
+                                <span>Python</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Design</h3>
+                        <div class="skill-list">
+                            <div class="skill-card">
+                                <span class="icon">Fg</span>
+                                <span>Figma</span>
+                            </div>
+                            <div class="skill-card">
+                                <span class="icon">Ad</span>
+                                <span>Adobe XD</span>
+                            </div>
+                            <div class="skill-card">
+                                <span class="icon">Ui</span>
+                                <span>UI Prototyping</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="section animate-on-scroll">
+             <div class="container">
+                <h2 class="section-title">Selected Works</h2>
+                <div class="projects-grid">
+                    <!-- Projects will be loaded dynamically via script.js -->
+                    <div style="color: var(--text-secondary); grid-column: 1/-1; text-align: center;">Loading projects...</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section animate-on-scroll">
+             <div class="container contact-container">
+                <div class="contact-info">
+                    <h2 class="section-title">Get In Touch</h2>
+                    <p class="contact-text">Interested in working together? Have a question? Feel free to reach out. I'm available for freelance projects and full-time opportunities.</p>
+                    
+                    <ul class="contact-details">
+                        <li>
+                            <span class="label">Email</span>
+                            <a href="mailto:hello@bagas.dev" class="value">hello@bagas.dev</a>
+                        </li>
+                        <li>
+                            <span class="label">Socials</span>
+                            <div class="social-links">
+                                <a href="#">LinkedIn</a>
+                                <a href="#">GitHub</a>
+                                <a href="#">Dribbble</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" rows="5" placeholder="Tell me about your project..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Bagas. Built with <span class="heart">♥</span> and code.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
