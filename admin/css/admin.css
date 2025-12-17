@@ -1,0 +1,134 @@
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: #121212;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    padding: 30px;
+}
+
+.sidebar .logo {
+    margin-bottom: 50px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.admin-menu {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-menu li {
+    margin-bottom: 15px;
+}
+
+.admin-menu a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.admin-menu a:hover, .admin-menu a.active {
+    background: rgba(255,255,255,0.05);
+    color: var(--white);
+}
+
+.admin-menu a .icon {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    margin-left: 260px; /* Sidebar width */
+    padding: 40px 50px;
+    background: #050505;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+/* Tables / Lists */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #121212;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.data-table th, .data-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.data-table th {
+    background: rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tr:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-danger {
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d;
+}
+
+.btn-danger:hover {
+    background: rgba(255, 77, 77, 0.2);
+}
+
+/* Forms */
+.admin-form-card {
+    background: #121212;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+    max-width: 600px;
+}
+
+.skill-list, .message-list {
+    display: grid;
+    gap: 20px;
+}
