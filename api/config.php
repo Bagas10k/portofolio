@@ -11,12 +11,12 @@ define('DB_NAME', 'bags_portofolio');
 define('ADMIN_PASSWORD', 'Bagassaputra83');
 
 // --- PATHS ---
-define('UPLOAD_DIR', '../assets/images/projects/');
-define('PROJECTS_FILE', '../data/projects.json');
-define('EDUCATION_FILE', '../data/education.json');
-define('SKILLS_FILE', '../data/skills.json');
-define('MESSAGES_FILE', '../data/messages.json');
-define('PROFILE_FILE', '../data/profile.json');
+define('UPLOAD_DIR', __DIR__ . '/../assets/images/projects/');
+define('PROJECTS_FILE', __DIR__ . '/../data/projects.json');
+define('EDUCATION_FILE', __DIR__ . '/../data/education.json');
+define('SKILLS_FILE', __DIR__ . '/../data/skills.json');
+define('MESSAGES_FILE', __DIR__ . '/../data/messages.json');
+define('PROFILE_FILE', __DIR__ . '/../data/profile.json');
 
 // --- HEADERS & SECURITY ---
 // Disable error printing to avoid breaking JSON
