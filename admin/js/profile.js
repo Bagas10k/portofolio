@@ -23,6 +23,10 @@ async function loadProfile() {
                 document.forms['profileForm']['github'].value = d.socials.github || '';
                 document.forms['profileForm']['dribbble'].value = d.socials.dribbble || '';
             }
+            
+            if(d.avatar) {
+                document.getElementById('currentAvatarPreview').innerHTML = `<img src="../${d.avatar}" style="width:100px; height:100px; object-fit:cover; border-radius:8px; border:1px solid #333;">`;
+            }
         }
     } catch (e) {
         console.error(e);
@@ -37,24 +41,13 @@ async function updateProfile(e) {
     btn.disabled = true;
 
     const form = e.target;
-    const data = {
-        name: form.name.value,
-        role: form.role.value,
-        tagline: form.tagline.value,
-        about_text: form.about_text.value,
-        years_exp: form.years_exp.value,
-        projects_count: form.projects_count.value,
-        email: form.email.value,
-        linkedin: form.linkedin.value,
-        github: form.github.value,
-        dribbble: form.dribbble.value
-    };
+    // Use FormData for file upload
+    const formData = new FormData(form);
 
     try {
         const res = await fetch('../api/profile.php', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
+            body: formData // Fetch automatically sets Content-Type to multipart/form-data
         });
         const json = await res.json();
         

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Dynamic Content
     loadProfile();
     loadSkills();
-    loadEducation(); // New
+    if(typeof loadEducation === 'function') loadEducation(); 
     loadProjects();
 
     // Mobile Menu Toggle
@@ -43,13 +43,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
+    const sunIcon = document.querySelector('.sun-icon');
+    const moonIcon = document.querySelector('.moon-icon');
+
+    function updateIcons(isLight) {
+        if(isLight) {
+            if(sunIcon) sunIcon.style.display = 'none';
+            if(moonIcon) moonIcon.style.display = 'block';
+        } else {
+            if(sunIcon) sunIcon.style.display = 'block';
+            if(moonIcon) moonIcon.style.display = 'none';
+        }
+    }
     
     // Check local storage
     if (localStorage.getItem('theme') === 'light') {
         body.classList.add('light-mode');
-        if (themeToggle) themeToggle.textContent = '🌙';
+        updateIcons(true);
     } else {
-        if (themeToggle) themeToggle.textContent = '☀️'; // Default to dark mode icon if not light
+        updateIcons(false);
     }
 
     if (themeToggle) {
@@ -58,10 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (body.classList.contains('light-mode')) {
                 localStorage.setItem('theme', 'light');
-                themeToggle.textContent = '🌙';
+                updateIcons(true);
             } else {
                 localStorage.setItem('theme', 'dark');
-                themeToggle.textContent = '☀️';
+                updateIcons(false);
             }
         });
     }
@@ -139,6 +151,12 @@ async function loadProfile() {
         if (json.success && json.data) {
             const p = json.data;
             document.title = `${p.name} | ${p.role}`;
+            
+            // Avatar
+            const avatarImg = document.querySelector('.avatar-image');
+            if(avatarImg && p.avatar) {
+                avatarImg.src = p.avatar;
+            }
             
             // Hero
             if(document.getElementById('heroName')) {
