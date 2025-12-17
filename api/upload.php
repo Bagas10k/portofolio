@@ -21,6 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fileExtension = strtolower(end($fileNameCmps));
         
         $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+        
+        // Ensure upload dir exists
+        if (!is_dir(UPLOAD_DIR)) {
+            mkdir(UPLOAD_DIR, 0755, true);
+        }
+
         $dest_path = UPLOAD_DIR . $newFileName;
 
         if(move_uploaded_file($fileTmpPath, $dest_path)) {
