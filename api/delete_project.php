@@ -16,36 +16,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $json_data = file_get_contents(DATA_FILE);
-    $projects = json_decode($json_data, true);
+    // Get image path first to delete file
+    $stmt = $conn->prepare("SELECT image FROM projects WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    // Find the project to delete (to delete image if needed)
-    $projectIndex = -1;
-    $projectImage = null;
-
-    foreach ($projects as $index => $p) {
-        if ($p['id'] === $id) {
-            $projectIndex = $index;
-            $projectImage = $p['image'];
-            break;
-        }
-    }
-
-    if ($projectIndex > -1) {
-        // Remove from array
-        array_splice($projects, $projectIndex, 1);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
         
-        // Save JSON
-        file_put_contents(DATA_FILE, json_encode($projects, JSON_PRETTY_PRINT));
-
-        // Delete image file if exists and is not external
-        if ($projectImage && file_exists('../' . $projectImage)) {
-            unlink('../' . $projectImage);
+        // Delete from DB
+        $delParams = $conn->prepare("DELETE FROM projects WHERE id = ?");
+        $delParams->bind_param("i", $id);
+        
+        if ($delParams->execute()) {
+            // Delete file
+            if ($row['image'] && file_exists('../' . $row['image'])) {
+                unlink('../' . $row['image']);
+            }
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'DB Error']);
         }
-
-        echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Project not found']);
     }
 }
+$conn->close();
 ?>

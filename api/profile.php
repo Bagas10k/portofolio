@@ -4,52 +4,63 @@ require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-function getProfile() {
-    if (!file_exists(PROFILE_FILE)) return [];
-    $json = file_get_contents(PROFILE_FILE);
-    return json_decode($json, true) ?? [];
-}
-
-function saveProfile($data) {
-    file_put_contents(PROFILE_FILE, json_encode($data, JSON_PRETTY_PRINT));
-}
-
-// GET: Fetch profile
+// GET
 if ($method === 'GET') {
-    echo json_encode(['success' => true, 'data' => getProfile()]);
+    // We assume ID 1 is the main profile
+    $sql = "SELECT * FROM profile WHERE id = 1 LIMIT 1";
+    $result = $conn->query($sql);
+    
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        // Structure data to match expected frontend format
+        $data = [
+            'name' => $row['name'],
+            'role' => $row['role'],
+            'tagline' => $row['tagline'],
+            'about_text' => $row['about_text'],
+            'years_exp' => $row['years_exp'],
+            'projects_count' => $row['projects_count'],
+            'email' => $row['email'],
+            'socials' => [
+                'linkedin' => $row['linkedin'],
+                'github' => $row['github'],
+                'dribbble' => $row['dribbble']
+            ]
+        ];
+        echo json_encode(['success' => true, 'data' => $data]);
+    } else {
+        echo json_encode(['success' => false, 'data' => []]);
+    }
     exit;
 }
 
-// POST: Update profile (Admin only)
+// POST (Update)
 if ($method === 'POST') {
-    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-        http_response_code(401);
-        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-        exit;
-    }
+    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) exit(json_encode(['success'=>false, 'message'=>'Unauthorized']));
 
     $input = json_decode(file_get_contents('php://input'), true);
-    
-    // Merge with existing to keep other fields if partial update (optional, but safer to replace generally for this simple app)
-    // But let's just replace relevant fields to ensure consistency
-    
-    $newProfile = [
-        "name" => $input['name'] ?? '',
-        "role" => $input['role'] ?? '',
-        "tagline" => $input['tagline'] ?? '',
-        "about_text" => $input['about_text'] ?? '',
-        "years_exp" => $input['years_exp'] ?? '',
-        "projects_count" => $input['projects_count'] ?? '',
-        "email" => $input['email'] ?? '',
-        "socials" => [
-            "linkedin" => $input['linkedin'] ?? '',
-            "github" => $input['github'] ?? '',
-            "dribbble" => $input['dribbble'] ?? ''
-        ]
-    ];
 
-    saveProfile($newProfile);
-    echo json_encode(['success' => true, 'data' => $newProfile]);
+    $stmt = $conn->prepare("UPDATE profile SET name=?, role=?, tagline=?, about_text=?, years_exp=?, projects_count=?, email=?, linkedin=?, github=?, dribbble=? WHERE id=1");
+    
+    $stmt->bind_param("ssssssssss", 
+        $input['name'], 
+        $input['role'], 
+        $input['tagline'], 
+        $input['about_text'], 
+        $input['years_exp'], 
+        $input['projects_count'], 
+        $input['email'], 
+        $input['linkedin'], 
+        $input['github'], 
+        $input['dribbble']
+    );
+
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => $stmt->error]);
+    }
     exit;
 }
+$conn->close();
 ?>
