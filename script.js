@@ -91,7 +91,51 @@ document.addEventListener('DOMContentLoaded', () => {
     // Observe elements
     // We will add 'fade-in' class to elements in HTML to use this
     const animatedElements = document.querySelectorAll('.animate-on-scroll');
-    animatedElements.forEach(el => observer.observe(el));
+    // We will add 'fade-in' class to elements in HTML to use this
+    // const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    // animatedElements.forEach(el => observer.observe(el));
+    // The previous block was duplicated by mistake. Removing the extra declaration.
+    
+    // Contact Form Handler
+    const contactForm = document.querySelector('.contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = contactForm.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value
+            };
+
+            try {
+                const res = await fetch('api/messages.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const json = await res.json();
+                
+                if (json.success) {
+                    alert('Message sent successfully!');
+                    contactForm.reset();
+                } else {
+                    alert('Failed to send: ' + json.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error sending message.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
+    }
 });
 
 async function loadProjects() {
@@ -246,5 +290,48 @@ async function loadSkills() {
     } catch(e) {
         console.error(e);
         container.innerHTML = 'Error loading skills.';
+    }
+}
+
+async function loadEducation() {
+    const container = document.getElementById('educationTimeline');
+    if (!container) return;
+
+    try {
+        const res = await fetch('api/education.php?t=' + new Date().getTime());
+        const json = await res.json();
+        
+        if (json.success) {
+            const data = json.data;
+            if (data.length === 0) {
+                container.innerHTML = '<p>No education history available.</p>';
+                return;
+            }
+
+            container.innerHTML = data.map(edu => `
+                <div class="timeline-item animate-on-scroll">
+                    <span class="timeline-year">${edu.year}</span>
+                    <div class="timeline-content">
+                        <h3>${edu.school}</h3>
+                        <h4>${edu.degree}</h4>
+                        ${edu.description ? `<p>${edu.description}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            // Re-observe for animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            container.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
+        }
+    } catch (err) {
+        console.error('Error loading education:', err);
+        container.innerHTML = '<p>Error loading education history.</p>';
     }
 }

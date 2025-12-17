@@ -4,52 +4,88 @@ require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+function getSkillsData() {
+    if (!file_exists(SKILLS_FILE)) return [];
+    $content = file_get_contents(SKILLS_FILE);
+    return json_decode($content, true) ?? [];
+}
+
+function saveSkillsData($data) {
+    return file_put_contents(SKILLS_FILE, json_encode($data, JSON_PRETTY_PRINT));
+}
+
 // GET
 if ($method === 'GET') {
-    $sql = "SELECT * FROM skills";
-    $result = $conn->query($sql);
-    $skills = [];
-    if($result) {
-        while($row = $result->fetch_assoc()) $skills[] = $row;
-    }
-    echo json_encode(['success' => true, 'data' => $skills]);
+    $data = getSkillsData();
+    echo json_encode(['success' => true, 'data' => $data]);
     exit;
 }
 
 // POST (Add)
 if ($method === 'POST') {
-    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) exit(json_encode(['success'=>false, 'message'=>'Unauthorized']));
+    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+        echo json_encode(['success'=>false, 'message'=>'Unauthorized']);
+        exit;
+    }
 
     $input = json_decode(file_get_contents('php://input'), true);
     $name = $input['name'] ?? '';
     $category = $input['category'] ?? 'Development';
     $icon = $input['icon'] ?? 'Code';
 
-    $stmt = $conn->prepare("INSERT INTO skills (name, category, icon) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $name, $category, $icon);
+    if (!$name) {
+        echo json_encode(['success'=>false, 'message'=>'Name required']);
+        exit;
+    }
+
+    $data = getSkillsData();
     
-    if ($stmt->execute()) {
+    $newSkill = [
+        'id' => (string)time(),
+        'name' => $name,
+        'category' => $category,
+        'icon' => $icon
+    ];
+
+    $data[] = $newSkill;
+    
+    if (saveSkillsData($data)) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => $stmt->error]);
+        echo json_encode(['success' => false, 'message' => 'Failed to save']);
     }
     exit;
 }
 
 // DELETE
 if ($method === 'DELETE') {
-    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) exit(json_encode(['success'=>false, 'message'=>'Unauthorized']));
+    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+        echo json_encode(['success'=>false, 'message'=>'Unauthorized']);
+        exit;
+    }
 
     $id = $_GET['id'] ?? 0;
-    $stmt = $conn->prepare("DELETE FROM skills WHERE id = ?");
-    $stmt->bind_param("i", $id);
+    $data = getSkillsData();
+    $found = false;
     
-    if ($stmt->execute()) {
-        echo json_encode(['success' => true]);
+    $newData = [];
+    foreach($data as $item) {
+        if ($item['id'] != $id) {
+            $newData[] = $item;
+        } else {
+            $found = true;
+        }
+    }
+
+    if ($found) {
+        if (saveSkillsData($newData)) {
+            echo json_encode(['success' => true]);
+        } else {
+             echo json_encode(['success' => false, 'message' => 'Failed to save']);
+        }
     } else {
-        echo json_encode(['success' => false, 'message' => $stmt->error]);
+        echo json_encode(['success' => false, 'message' => 'Item not found']);
     }
     exit;
 }
-$conn->close();
 ?>

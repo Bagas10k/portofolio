@@ -4,17 +4,29 @@ require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+function getMessagesData() {
+    if (!file_exists(MESSAGES_FILE)) return [];
+    $content = file_get_contents(MESSAGES_FILE);
+    return json_decode($content, true) ?? [];
+}
+
+function saveMessagesData($data) {
+    return file_put_contents(MESSAGES_FILE, json_encode($data, JSON_PRETTY_PRINT));
+}
+
 // GET
 if ($method === 'GET') {
-    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) exit(json_encode(['success'=>false, 'message'=>'Unauthorized']));
-
-    $sql = "SELECT * FROM messages ORDER BY created_at DESC";
-    $result = $conn->query($sql);
-    $msgs = [];
-    if($result) {
-        while($row = $result->fetch_assoc()) $msgs[] = $row;
+    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+        echo json_encode(['success'=>false, 'message'=>'Unauthorized']);
+        exit;
     }
-    echo json_encode(['success' => true, 'data' => $msgs]);
+
+    $data = getMessagesData();
+    // Sort by created_at DESC (simulated by array_reverse if simple append, else we need dates)
+    // For simplicity, we just reverse key order (newest is last added)
+    $data = array_reverse($data);
+    
+    echo json_encode(['success' => true, 'data' => $data]);
     exit;
 }
 
@@ -24,16 +36,62 @@ if ($method === 'POST') {
     $name = $input['name'] ?? '';
     $email = $input['email'] ?? '';
     $message = $input['message'] ?? '';
-
-    $stmt = $conn->prepare("INSERT INTO messages (name, email, message) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $name, $email, $message);
     
-    if ($stmt->execute()) {
+    if (!$name || !$email || !$message) {
+        echo json_encode(['success'=>false, 'message'=>'All fields required']);
+        exit;
+    }
+
+    $data = getMessagesData();
+    
+    $newMsg = [
+        'id' => (string)time(),
+        'name' => $name,
+        'email' => $email,
+        'message' => $message,
+        'created_at' => date('Y-m-d H:i:s')
+    ];
+
+    $data[] = $newMsg;
+    
+    if (saveMessagesData($data)) {
         echo json_encode(['success' => true, 'message' => 'Sent']);
     } else {
-        echo json_encode(['success' => false, 'message' => $stmt->error]);
+        echo json_encode(['success' => false, 'message' => 'Failed to save']);
     }
     exit;
 }
-$conn->close();
+
+// DELETE
+if ($method === 'DELETE') {
+    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+        echo json_encode(['success'=>false, 'message'=>'Unauthorized']);
+        exit;
+    }
+
+    $id = $_GET['id'] ?? 0;
+    
+    $data = getMessagesData();
+    $found = false;
+    $newData = [];
+
+    foreach($data as $item) {
+        if ($item['id'] != $id) {
+            $newData[] = $item;
+        } else {
+            $found = true;
+        }
+    }
+
+    if ($found) {
+        if (saveMessagesData($newData)) {
+            echo json_encode(['success' => true]);
+        } else {
+             echo json_encode(['success' => false, 'message' => 'Failed to save']);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Item not found']);
+    }
+    exit;
+}
 ?>

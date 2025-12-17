@@ -49,7 +49,7 @@ async function loadEducation() {
                     <td><strong>${edu.school}</strong></td>
                     <td>${edu.degree}</td>
                     <td>
-                        <button class="btn-delete" onclick="deleteEducation(${edu.id})">Delete</button>
+                        <button class="action-btn btn-danger" onclick="deleteEducation('${edu.id}')">Delete</button>
                     </td>
                 </tr>
             `).join('');

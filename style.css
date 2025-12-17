@@ -70,6 +70,14 @@ body.light-mode .mobile-toggle span {
     background-color: var(--text-primary);
 }
 
+body.light-mode .btn-primary {
+    color: #ffffff;
+}
+
+body.light-mode .logo img {
+    filter: invert(1);
+}
+
 * {
     margin: 0;
     padding: 0;

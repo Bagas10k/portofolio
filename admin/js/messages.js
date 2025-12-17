@@ -26,7 +26,8 @@ async function loadMessages() {
                 </td>
                 <td>${msg.message}</td>
                 <td>
-                    <a href="mailto:${msg.email}" class="action-btn" style="background: rgba(255,255,255,0.1); color: #fff; text-decoration: none;">Reply</a>
+                    <a href="mailto:${msg.email}" class="action-btn" style="background: rgba(255,255,255,0.1); color: #fff; text-decoration: none; margin-right: 5px;">Reply</a>
+                    <button class="action-btn btn-danger" onclick="deleteMessage('${msg.id}')">Delete</button>
                 </td>
             `;
             list.appendChild(tr);
@@ -35,5 +36,22 @@ async function loadMessages() {
     } catch (e) {
         console.error(e);
         list.innerHTML = '<tr><td colspan="4">Error loading messages.</td></tr>';
+    }
+}
+
+async function deleteMessage(id) {
+    if(!confirm('Delete this message?')) return;
+
+    try {
+        const res = await fetch(`../api/messages.php?id=${id}`, { method: 'DELETE' });
+        const json = await res.json();
+        if(json.success) {
+            loadMessages();
+        } else {
+            alert('Failed to delete: ' + json.message);
+        }
+    } catch(e) {
+        console.error(e);
+        alert('Error deleting message');
     }
 }
