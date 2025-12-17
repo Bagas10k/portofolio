@@ -31,8 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if(move_uploaded_file($fileTmpPath, $dest_path)) {
             // Read JSON
-            $json_data = file_get_contents(DATA_FILE);
-            $projects = json_decode($json_data, true);
+            if (file_exists(DATA_FILE)) {
+                $json_data = file_get_contents(DATA_FILE);
+                $projects = json_decode($json_data, true);
+            } else {
+                $projects = [];
+            }
+            
+            if (!is_array($projects)) {
+                $projects = [];
+            }
 
             // Add new project
             $new_project = [

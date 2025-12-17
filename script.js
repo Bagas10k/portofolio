@@ -59,7 +59,7 @@ async function loadProjects() {
     if (!grid) return;
 
     try {
-        const res = await fetch('api/get_projects.php');
+        const res = await fetch('api/get_projects.php?t=' + new Date().getTime());
         const projects = await res.json();
 
         // Clear placeholder content if we have data
@@ -106,7 +106,7 @@ async function loadProjects() {
 
 async function loadProfile() {
     try {
-        const res = await fetch('api/profile.php');
+        const res = await fetch('api/profile.php?t=' + new Date().getTime());
         const json = await res.json();
         if (json.success && json.data) {
             const p = json.data;
@@ -157,7 +157,7 @@ async function loadSkills() {
     if (!container) return;
 
     try {
-        const res = await fetch('api/skills.php');
+        const res = await fetch('api/skills.php?t=' + new Date().getTime());
         const json = await res.json();
         
         if (json.success) {
