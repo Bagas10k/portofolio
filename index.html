@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bagas | Programmer & UI/UX Designer</title>
-    <meta name="description" content="Portfolio of Bagas, a Creative Programmer & UI/UX Designer specializing in minimalist and tech-forward web experiences.">
+    <title>Bagas saputra</title>
+    <meta name="description" content="Portfolio of Bagas">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,10 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">Bagas<span class="dot">.</span></div>
+        <div class="logo">
+            <img src="assets/logo.svg" alt="Bagas Logo" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+            <span>Bagas<span class="dot">.</span></span>
+        </div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
@@ -23,11 +26,11 @@
             <li><a href="#projects">Projects</a></li>
             <li><a href="#contact" class="btn-nav">Contact</a></li>
         </ul>
-        <div class="mobile-toggle">
-            <span></span>
-            <span></span>
             <span></span>
         </div>
+        <button id="themeToggle" style="background:none; border:none; color:var(--white); cursor:pointer; font-size:1.2rem; margin-left:20px;">
+            ☀️
+        </button>
     </nav>
 
     <main>
@@ -83,6 +86,17 @@
                 <div class="skills-grid" id="skillsContainer">
                     <!-- Dynamic Skills Loaded Here -->
                     <div style="color:var(--text-secondary)">Loading skills...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education" class="section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Education</h2>
+                <div class="timeline" id="educationTimeline">
+                    <!-- Dynamic Content -->
+                     <p>Loading education...</p>
                 </div>
             </div>
         </section>

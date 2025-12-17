@@ -8,7 +8,7 @@ define('DB_PASS', 'bagas123');     // Change to your DB Password
 define('DB_NAME', 'bags_portofolio');
 
 // --- ADMIN PASSWORD ---
-define('ADMIN_PASSWORD', 'admin123');
+define('ADMIN_PASSWORD', 'Bagassaputra83');
 
 // --- PATHS ---
 define('UPLOAD_DIR', '../assets/images/projects/');

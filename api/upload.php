@@ -38,7 +38,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dest_path = UPLOAD_DIR . $newFileName;
         $db_image_path = "assets/images/projects/" . $newFileName;
 
-        if(move_uploaded_file($fileTmpPath, $dest_path)) {
+        // OPTIMIZATION: Resize/Compress Image
+        $uploaded = $fileTmpPath;
+        list($width, $height) = getimagesize($uploaded);
+        $max_width = 800; // Resize to max 800px width
+
+        if ($width > $max_width) {
+            $ratio = $max_width / $width;
+            $new_width = $max_width;
+            $new_height = $height * $ratio;
+
+            $src = imagecreatefromstring(file_get_contents($uploaded));
+            $dst = imagecreatetruecolor($new_width, $new_height);
+            
+            // Maintain transparency for PNG/WEBP
+            imagealphablending($dst, false);
+            imagesavealpha($dst, true);
+
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+            
+            // Save based on extension
+            switch($fileExtension) {
+                case 'png': imagepng($dst, $dest_path, 8); break; 
+                case 'jpg': case 'jpeg': imagejpeg($dst, $dest_path, 85); break;
+                case 'webp': imagewebp($dst, $dest_path, 85); break;
+                default: move_uploaded_file($uploaded, $dest_path); break; // Fallback
+            }
+            imagedestroy($src);
+            imagedestroy($dst);
+            $moved = true;
+        } else {
+            // No resize needed, just move
+            $moved = move_uploaded_file($uploaded, $dest_path);
+        }
+
+        if($moved) {
             
             // Insert into Database
             $stmt = $conn->prepare("INSERT INTO projects (title, description, image, tags, link) VALUES (?, ?, ?, ?, ?)");

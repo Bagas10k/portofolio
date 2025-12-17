@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Dynamic Content
     loadProfile();
     loadSkills();
+    loadEducation(); // New
     loadProjects();
 
     // Mobile Menu Toggle
@@ -39,6 +40,33 @@ document.addEventListener('DOMContentLoaded', () => {
         rootMargin: "0px 0px -50px 0px"
     };
 
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    
+    // Check local storage
+    if (localStorage.getItem('theme') === 'light') {
+        body.classList.add('light-mode');
+        if (themeToggle) themeToggle.textContent = '🌙';
+    } else {
+        if (themeToggle) themeToggle.textContent = '☀️'; // Default to dark mode icon if not light
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '🌙';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '☀️';
+            }
+        });
+    }
+
+    // Initialize Scroll Reveal
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
