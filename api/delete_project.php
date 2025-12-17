@@ -7,8 +7,14 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'DELETE' || isset($_GET['id'])) {
-    $id = $_GET['id'] ?? 0;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $id = $input['id'] ?? 0;
+
+    if (!$id) {
+         echo json_encode(['success' => false, 'message' => 'No ID provided']);
+         exit;
+    }
     
     // Get image path before deleting
     $stmt = $conn->prepare("SELECT image FROM projects WHERE id = ?");

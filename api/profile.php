@@ -6,6 +6,11 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // GET
 if ($method === 'GET') {
+    if (defined('DB_ERROR') && DB_ERROR) {
+        echo json_encode(['success'=>false, 'message'=>'Database Connection Failed']);
+        exit;
+    }
+
     // We assume ID 1 is the main profile
     $sql = "SELECT * FROM profile WHERE id = 1 LIMIT 1";
     $result = $conn->query($sql);
@@ -30,7 +35,8 @@ if ($method === 'GET') {
         ];
         echo json_encode(['success' => true, 'data' => $data]);
     } else {
-        echo json_encode(['success' => false, 'data' => []]);
+        // Table might not exist or empty
+        echo json_encode(['success' => false, 'message' => 'Profile not found. Please run setup.']);
     }
     exit;
 }
