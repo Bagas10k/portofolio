@@ -11,7 +11,25 @@ function getMessagesData() {
 }
 
 function saveMessagesData($data) {
-    return file_put_contents(MESSAGES_FILE, json_encode($data, JSON_PRETTY_PRINT));
+    // Ensure directory exists
+    $dir = dirname(MESSAGES_FILE);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    
+    // Ensure parent directory is writable
+    if (!is_writable($dir)) {
+        chmod($dir, 0777);
+    }
+    
+    $result = file_put_contents(MESSAGES_FILE, json_encode($data, JSON_PRETTY_PRINT));
+    
+    // Set file permissions if successfully created
+    if ($result !== false && file_exists(MESSAGES_FILE)) {
+        chmod(MESSAGES_FILE, 0666);
+    }
+    
+    return $result;
 }
 
 // GET
@@ -57,7 +75,8 @@ if ($method === 'POST') {
     if (saveMessagesData($data)) {
         echo json_encode(['success' => true, 'message' => 'Sent']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to save']);
+        $e = error_get_last();
+        echo json_encode(['success' => false, 'message' => 'Failed to save: ' . ($e['message'] ?? 'Unknown')]);
     }
     exit;
 }

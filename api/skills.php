@@ -11,7 +11,25 @@ function getSkillsData() {
 }
 
 function saveSkillsData($data) {
-    return file_put_contents(SKILLS_FILE, json_encode($data, JSON_PRETTY_PRINT));
+    // Ensure directory exists
+    $dir = dirname(SKILLS_FILE);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    
+    // Ensure parent directory is writable
+    if (!is_writable($dir)) {
+        chmod($dir, 0777);
+    }
+    
+    $result = file_put_contents(SKILLS_FILE, json_encode($data, JSON_PRETTY_PRINT));
+    
+    // Set file permissions if successfully created
+    if ($result !== false && file_exists(SKILLS_FILE)) {
+        chmod(SKILLS_FILE, 0666);
+    }
+    
+    return $result;
 }
 
 // GET
@@ -52,7 +70,8 @@ if ($method === 'POST') {
     if (saveSkillsData($data)) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to save']);
+        $e = error_get_last();
+        echo json_encode(['success' => false, 'message' => 'Failed to save: ' . ($e['message'] ?? 'Unknown')]);
     }
     exit;
 }

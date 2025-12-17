@@ -12,7 +12,25 @@ function getEducationData() {
 }
 
 function saveEducationData($data) {
-    return file_put_contents(EDUCATION_FILE, json_encode($data, JSON_PRETTY_PRINT));
+    // Ensure directory exists
+    $dir = dirname(EDUCATION_FILE);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    
+    // Ensure parent directory is writable
+    if (!is_writable($dir)) {
+        chmod($dir, 0777);
+    }
+    
+    $result = file_put_contents(EDUCATION_FILE, json_encode($data, JSON_PRETTY_PRINT));
+    
+    // Set file permissions if successfully created
+    if ($result !== false && file_exists(EDUCATION_FILE)) {
+        chmod(EDUCATION_FILE, 0666);
+    }
+    
+    return $result;
 }
 
 // GET
@@ -59,7 +77,8 @@ if ($method === 'POST') {
     if (saveEducationData($data)) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to save']);
+        $e = error_get_last();
+        echo json_encode(['success' => false, 'message' => 'Failed to save: ' . ($e['message'] ?? 'Unknown')]);
     }
     exit;
 }

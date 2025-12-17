@@ -11,7 +11,25 @@ function getProfileData() {
 }
 
 function saveProfileData($data) {
-    return file_put_contents(PROFILE_FILE, json_encode($data, JSON_PRETTY_PRINT));
+    // Ensure directory exists
+    $dir = dirname(PROFILE_FILE);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    
+    // Ensure parent directory is writable
+    if (!is_writable($dir)) {
+        chmod($dir, 0777);
+    }
+    
+    $result = file_put_contents(PROFILE_FILE, json_encode($data, JSON_PRETTY_PRINT));
+    
+    // Set file permissions if successfully created
+    if ($result !== false && file_exists(PROFILE_FILE)) {
+        chmod(PROFILE_FILE, 0666);
+    }
+    
+    return $result;
 }
 
 // GET
@@ -85,7 +103,8 @@ if ($method === 'POST') {
     if (saveProfileData($newData)) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to save']);
+        $e = error_get_last();
+        echo json_encode(['success' => false, 'message' => 'Failed to save: ' . ($e['message'] ?? 'Unknown')]);
     }
     exit;
 }
