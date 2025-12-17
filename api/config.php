@@ -1,7 +1,7 @@
 <?php
 // Configuration & Database Connection
 
-// --- DATABASE SETTINGS (EDIT THIS) ---
+// --- DATABASE CREDENTIALS ---
 define('DB_HOST', 'localhost');
 define('DB_USER', 'bags_bagas'); // Change to your DB Username
 define('DB_PASS', 'bagas123');     // Change to your DB Password
@@ -10,13 +10,7 @@ define('DB_NAME', 'bags_portofolio');
 // --- ADMIN PASSWORD ---
 define('ADMIN_PASSWORD', 'Bagassaputra83');
 
-// --- PATHS ---
 define('UPLOAD_DIR', __DIR__ . '/../assets/images/projects/');
-define('PROJECTS_FILE', __DIR__ . '/../data/projects.json');
-define('EDUCATION_FILE', __DIR__ . '/../data/education.json');
-define('SKILLS_FILE', __DIR__ . '/../data/skills.json');
-define('MESSAGES_FILE', __DIR__ . '/../data/messages.json');
-define('PROFILE_FILE', __DIR__ . '/../data/profile.json');
 
 // --- HEADERS & SECURITY ---
 // Disable error printing to avoid breaking JSON
@@ -29,12 +23,15 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Cache-Control: post-check=0, pre-check=0', false);
 header('Pragma: no-cache');
 
-// --- DB CONNECTION ---
+// --- DATABASE CONNECTION ---
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 if ($conn->connect_error) {
-    // Log error but continue execution so JSON-based APIs still work
     error_log("Database connection failed: " . $conn->connect_error);
-    // die(json_encode(['success' => false, 'message' => 'Database connection failed: ' . $conn->connect_error]));
+    // Don't die completely - allow some APIs to work
+    // But store error state for APIs that need DB
+    define('DB_ERROR', true);
+} else {
+    define('DB_ERROR', false);
 }
 ?>

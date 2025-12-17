@@ -4,38 +4,30 @@ require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-function getProfileData() {
-    if (!file_exists(PROFILE_FILE)) return [];
-    $content = file_get_contents(PROFILE_FILE);
-    return json_decode($content, true) ?? [];
-}
-
-function saveProfileData($data) {
-    // Ensure directory exists
-    $dir = dirname(PROFILE_FILE);
-    if (!is_dir($dir)) {
-        mkdir($dir, 0777, true);
-    }
-    
-    // Ensure parent directory is writable
-    if (!is_writable($dir)) {
-        chmod($dir, 0777);
-    }
-    
-    $result = file_put_contents(PROFILE_FILE, json_encode($data, JSON_PRETTY_PRINT));
-    
-    // Set file permissions if successfully created
-    if ($result !== false && file_exists(PROFILE_FILE)) {
-        chmod(PROFILE_FILE, 0666);
-    }
-    
-    return $result;
-}
-
 // GET
 if ($method === 'GET') {
-    $data = getProfileData();
-    if (!empty($data)) {
+    // We assume ID 1 is the main profile
+    $sql = "SELECT * FROM profile WHERE id = 1 LIMIT 1";
+    $result = $conn->query($sql);
+    
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        // Structure data to match expected frontend format
+        $data = [
+            'name' => $row['name'],
+            'role' => $row['role'],
+            'tagline' => $row['tagline'],
+            'about_text' => $row['about_text'],
+            'avatar' => $row['avatar'],
+            'years_exp' => $row['years_exp'],
+            'projects_count' => $row['projects_count'],
+            'email' => $row['email'],
+            'socials' => [
+                'linkedin' => $row['linkedin'],
+                'github' => $row['github'],
+                'dribbble' => $row['dribbble']
+            ]
+        ];
         echo json_encode(['success' => true, 'data' => $data]);
     } else {
         echo json_encode(['success' => false, 'data' => []]);
@@ -49,63 +41,52 @@ if ($method === 'POST') {
         echo json_encode(['success'=>false, 'message'=>'Unauthorized']);
         exit;
     }
-    
-    $currentData = getProfileData();
 
     // Handle File Upload if present
-    $avatarPath = $currentData['avatar'] ?? ''; // Keep old if not changed
-    
+    $avatarPath = null;
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
         $allowed = ['jpg', 'jpeg', 'png', 'webp'];
         $ext = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
         
         if (in_array($ext, $allowed)) {
-            $uploadDir = '../assets/images/profile/'; // Ensure double dot if relative to api/
-            // Check dir logic
+            $uploadDir = '../assets/images/profile/';
             if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
             
             $newFilename = 'avatar_' . time() . '.' . $ext;
             $destPath = $uploadDir . $newFilename;
             
             if (move_uploaded_file($_FILES['avatar']['tmp_name'], $destPath)) {
-                $avatarPath = 'assets/images/profile/' . $newFilename; // Path for DB/JSON
+                $avatarPath = 'assets/images/profile/' . $newFilename;
             }
         }
     }
 
-    $name = $_POST['name'] ?? $currentData['name'] ?? '';
-    $role = $_POST['role'] ?? $currentData['role'] ?? '';
-    $tagline = $_POST['tagline'] ?? $currentData['tagline'] ?? '';
-    $about_text = $_POST['about_text'] ?? $currentData['about_text'] ?? '';
-    $years_exp = $_POST['years_exp'] ?? $currentData['years_exp'] ?? '';
-    $projects_count = $_POST['projects_count'] ?? $currentData['projects_count'] ?? '';
-    $email = $_POST['email'] ?? $currentData['email'] ?? '';
-    $linkedin = $_POST['linkedin'] ?? $currentData['socials']['linkedin'] ?? '';
-    $github = $_POST['github'] ?? $currentData['socials']['github'] ?? '';
-    $dribbble = $_POST['dribbble'] ?? $currentData['socials']['dribbble'] ?? '';
+    $name = $_POST['name'] ?? '';
+    $role = $_POST['role'] ?? '';
+    $tagline = $_POST['tagline'] ?? '';
+    $about_text = $_POST['about_text'] ?? '';
+    $years_exp = $_POST['years_exp'] ?? '';
+    $projects_count = $_POST['projects_count'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $linkedin = $_POST['linkedin'] ?? '';
+    $github = $_POST['github'] ?? '';
+    $dribbble = $_POST['dribbble'] ?? '';
 
-    $newData = [
-        'name' => $name,
-        'role' => $role,
-        'tagline' => $tagline,
-        'about_text' => $about_text,
-        'years_exp' => $years_exp,
-        'projects_count' => $projects_count,
-        'email' => $email,
-        'avatar' => $avatarPath,
-        'socials' => [
-            'linkedin' => $linkedin,
-            'github' => $github,
-            'dribbble' => $dribbble
-        ]
-    ];
+    // Build Query
+    if ($avatarPath) {
+        $stmt = $conn->prepare("UPDATE profile SET name=?, role=?, tagline=?, about_text=?, avatar=?, years_exp=?, projects_count=?, email=?, linkedin=?, github=?, dribbble=? WHERE id=1");
+        $stmt->bind_param("sssssssssss", $name, $role, $tagline, $about_text, $avatarPath, $years_exp, $projects_count, $email, $linkedin, $github, $dribbble);
+    } else {
+        $stmt = $conn->prepare("UPDATE profile SET name=?, role=?, tagline=?, about_text=?, years_exp=?, projects_count=?, email=?, linkedin=?, github=?, dribbble=? WHERE id=1");
+        $stmt->bind_param("ssssssssss", $name, $role, $tagline, $about_text, $years_exp, $projects_count, $email, $linkedin, $github, $dribbble);
+    }
 
-    if (saveProfileData($newData)) {
+    if ($stmt->execute()) {
         echo json_encode(['success' => true]);
     } else {
-        $e = error_get_last();
-        echo json_encode(['success' => false, 'message' => 'Failed to save: ' . ($e['message'] ?? 'Unknown')]);
+        echo json_encode(['success' => false, 'message' => $stmt->error]);
     }
     exit;
 }
+$conn->close();
 ?>

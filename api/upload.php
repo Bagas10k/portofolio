@@ -98,36 +98,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if($moved) {
-            // Read Existing JSON
-            $projects = [];
-            if (file_exists(PROJECTS_FILE)) {
-                $json_content = file_get_contents(PROJECTS_FILE);
-                $projects = json_decode($json_content, true) ?? [];
-            }
+            // Save to database instead of JSON
+            $tagsString = implode(',', $tagsArray); // Convert array back to comma-separated
             
-            // New ID
-            $newId = (string)time(); // simple timestamp ID
+            $stmt = $conn->prepare("INSERT INTO projects (title, description, image, tags, link) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssss", $title, $desc, $db_image_path, $tagsString, $link);
             
-            // New Project Object
-            $newProject = [
-                "id" => $newId,
-                "title" => $title,
-                "desc" => $desc,
-                "image" => $db_image_path,
-                "link" => $link,
-                "tags" => $tagsArray
-            ];
-            
-            // Prepend or Append? "ORDER BY id DESC" usually means newest first.
-            // So let's Prepend (unshift)
-            array_unshift($projects, $newProject);
-            
-            // Write to file
-            if (file_put_contents(PROJECTS_FILE, json_encode($projects, JSON_PRETTY_PRINT))) {
+            if ($stmt->execute()) {
                 echo json_encode(['success' => true]);
             } else {
-                 unlink($dest_path);
-                 echo json_encode(['success' => false, 'message' => 'Failed to write to JSON file']);
+                // Delete uploaded image if DB insert fails
+                unlink($dest_path);
+                echo json_encode(['success' => false, 'message' => 'Database error: ' . $stmt->error]);
             }
         } else {
             $err = error_get_last();

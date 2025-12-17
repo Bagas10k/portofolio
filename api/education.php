@@ -4,42 +4,14 @@ require_once 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Helper to read/write JSON
-function getEducationData() {
-    if (!file_exists(EDUCATION_FILE)) return [];
-    $content = file_get_contents(EDUCATION_FILE);
-    return json_decode($content, true) ?? [];
-}
-
-function saveEducationData($data) {
-    // Ensure directory exists
-    $dir = dirname(EDUCATION_FILE);
-    if (!is_dir($dir)) {
-        mkdir($dir, 0777, true);
-    }
-    
-    // Ensure parent directory is writable
-    if (!is_writable($dir)) {
-        chmod($dir, 0777);
-    }
-    
-    $result = file_put_contents(EDUCATION_FILE, json_encode($data, JSON_PRETTY_PRINT));
-    
-    // Set file permissions if successfully created
-    if ($result !== false && file_exists(EDUCATION_FILE)) {
-        chmod(EDUCATION_FILE, 0666);
-    }
-    
-    return $result;
-}
-
 // GET
 if ($method === 'GET') {
-    $data = getEducationData();
-    // Sort by year DESC
-    usort($data, function($a, $b) {
-        return strcmp($b['year'], $a['year']);
-    });
+    $sql = "SELECT * FROM education ORDER BY year DESC";
+    $result = $conn->query($sql);
+    $data = [];
+    if($result) {
+        while($row = $result->fetch_assoc()) $data[] = $row;
+    }
     echo json_encode(['success' => true, 'data' => $data]);
     exit;
 }
@@ -62,23 +34,13 @@ if ($method === 'POST') {
         exit;
     }
 
-    $data = getEducationData();
+    $stmt = $conn->prepare("INSERT INTO education (school, degree, year, description) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $school, $degree, $year, $desc);
     
-    $newEdu = [
-        'id' => (string)time(), // Simple ID
-        'school' => $school,
-        'degree' => $degree,
-        'year' => $year,
-        'description' => $desc
-    ];
-
-    $data[] = $newEdu;
-    
-    if (saveEducationData($data)) {
+    if ($stmt->execute()) {
         echo json_encode(['success' => true]);
     } else {
-        $e = error_get_last();
-        echo json_encode(['success' => false, 'message' => 'Failed to save: ' . ($e['message'] ?? 'Unknown')]);
+        echo json_encode(['success' => false, 'message' => $stmt->error]);
     }
     exit;
 }
@@ -91,29 +53,15 @@ if ($method === 'DELETE') {
     }
 
     $id = $_GET['id'] ?? 0;
+    $stmt = $conn->prepare("DELETE FROM education WHERE id = ?");
+    $stmt->bind_param("i", $id);
     
-    $data = getEducationData();
-    $found = false;
-    
-    // Filter out the item to delete
-    $newData = [];
-    foreach($data as $item) {
-        if ($item['id'] != $id) {
-            $newData[] = $item;
-        } else {
-            $found = true;
-        }
-    }
-
-    if ($found) {
-        if (saveEducationData($newData)) {
-            echo json_encode(['success' => true]);
-        } else {
-             echo json_encode(['success' => false, 'message' => 'Failed to save']);
-        }
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Item not found']);
+        echo json_encode(['success' => false, 'message' => $stmt->error]);
     }
     exit;
 }
+$conn->close();
 ?>
