@@ -22,7 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
         
         if (!is_dir(UPLOAD_DIR)) {
-            mkdir(UPLOAD_DIR, 0755, true);
+            // Attempt to create
+            if (!mkdir(UPLOAD_DIR, 0777, true)) {
+                 echo json_encode(['success' => false, 'message' => 'Failed to create upload folder. Server Permission Denied.']);
+                 exit;
+            }
+        }
+        
+        // Check strict write permission
+        if (!is_writable(UPLOAD_DIR)) {
+             echo json_encode(['success' => false, 'message' => 'Upload folder is NOT writable. Please Run: chmod 777 assets/images/projects']);
+             exit;
         }
 
         $dest_path = UPLOAD_DIR . $newFileName;
@@ -37,11 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->execute()) {
                 echo json_encode(['success' => true]);
             } else {
-                echo json_encode(['success' => false, 'message' => 'DB Error: ' . $stmt->error]);
+                // Delete uploaded file if DB insert fails to keep clean
+                unlink($dest_path);
+                echo json_encode(['success' => false, 'message' => 'Database Insert Failed: ' . $stmt->error]);
             }
             $stmt->close();
         } else {
-            echo json_encode(['success' => false, 'message' => 'Error moving file']);
+            $err = error_get_last();
+            echo json_encode(['success' => false, 'message' => 'Move File Failed. Reason: ' . ($err['message'] ?? 'Unknown')]);
         }
     } else {
         echo json_encode(['success' => false, 'message' => 'No file uploaded']);
