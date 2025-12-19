@@ -33,30 +33,58 @@ if ($method === 'POST') {
         exit;
     }
 
-    if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+    error_log("Gallery upload attempt started");
+
+    if (!isset($_FILES['image'])) {
+        error_log("No image file in request");
         echo json_encode(['success' => false, 'message' => 'No file uploaded']);
         exit;
     }
 
+    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+        $error_code = $_FILES['image']['error'];
+        error_log("Upload error code: " . $error_code);
+        echo json_encode(['success' => false, 'message' => 'Upload error code: ' . $error_code]);
+        exit;
+    }
+
     $file = $_FILES['image'];
+    error_log("File upload - Name: " . $file['name'] . ", Size: " . $file['size'] . ", Type: " . $file['type']);
+    
     $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     
     // Validation
     if (!in_array($ext, $allowed)) {
+        error_log("Invalid file type: " . $ext);
         echo json_encode(['success' => false, 'message' => 'Invalid file type. Only JPG, PNG, WEBP, and GIF allowed.']);
         exit;
     }
     
     if ($file['size'] > 10 * 1024 * 1024) { // 10MB max
+        error_log("File too large: " . $file['size']);
         echo json_encode(['success' => false, 'message' => 'File too large. Maximum size is 10MB.']);
         exit;
     }
 
     // Create upload directory
     $uploadDir = '../assets/images/gallery/';
+    error_log("Upload directory: " . $uploadDir);
+    
     if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+        error_log("Directory does not exist, creating...");
+        if (!mkdir($uploadDir, 0777, true)) {
+            error_log("Failed to create directory");
+            echo json_encode(['success' => false, 'message' => 'Failed to create upload directory']);
+            exit;
+        }
+        error_log("Directory created successfully");
+    }
+
+    if (!is_writable($uploadDir)) {
+        error_log("Directory is not writable");
+        echo json_encode(['success' => false, 'message' => 'Upload directory is not writable. Check permissions.']);
+        exit;
     }
 
     // Generate unique filename
@@ -64,13 +92,18 @@ if ($method === 'POST') {
     $destPath = $uploadDir . $newFilename;
     $filepath = 'assets/images/gallery/' . $newFilename;
 
+    error_log("Attempting to move file from " . $file['tmp_name'] . " to " . $destPath);
+
     if (move_uploaded_file($file['tmp_name'], $destPath)) {
+        error_log("File moved successfully");
+        
         // Save to database
         $stmt = $conn->prepare("INSERT INTO gallery (filename, filepath, filesize, filetype) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssis", $file['name'], $filepath, $file['size'], $file['type']);
         
         if ($stmt->execute()) {
             $imageId = $stmt->insert_id;
+            error_log("Saved to database with ID: " . $imageId);
             echo json_encode([
                 'success' => true, 
                 'message' => 'Image uploaded successfully',
@@ -85,10 +118,12 @@ if ($method === 'POST') {
         } else {
             // Delete uploaded file if database insert fails
             unlink($destPath);
-            echo json_encode(['success' => false, 'message' => 'Failed to save to database']);
+            error_log("Database insert failed: " . $stmt->error);
+            echo json_encode(['success' => false, 'message' => 'Failed to save to database: ' . $stmt->error]);
         }
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to upload file']);
+        error_log("Failed to move uploaded file. Check permissions on: " . $uploadDir);
+        echo json_encode(['success' => false, 'message' => 'Failed to upload file. Check directory permissions.']);
     }
     
     $conn->close();
