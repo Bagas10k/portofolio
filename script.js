@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const moonIcon = document.querySelector('.moon-icon');
 
     function updateIcons(isLight) {
+        console.log('Updating icons, isLight:', isLight);
         if(isLight) {
             if(sunIcon) sunIcon.style.display = 'none';
             if(moonIcon) moonIcon.style.display = 'block';
@@ -56,19 +57,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Check local storage
-    if (localStorage.getItem('theme') === 'light') {
+    // Check local storage on page load
+    const currentTheme = localStorage.getItem('theme');
+    console.log('Current theme from localStorage:', currentTheme);
+    
+    if (currentTheme === 'light') {
         body.classList.add('light-mode');
         updateIcons(true);
     } else {
+        body.classList.remove('light-mode');
         updateIcons(false);
     }
 
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('light-mode');
+            const isLightMode = body.classList.contains('light-mode');
             
-            if (body.classList.contains('light-mode')) {
+            console.log('Theme toggled! Light mode:', isLightMode);
+            
+            if (isLightMode) {
                 localStorage.setItem('theme', 'light');
                 updateIcons(true);
             } else {
@@ -76,7 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateIcons(false);
             }
         });
+    } else {
+        console.error('Theme toggle button not found!');
     }
+
 
     // Initialize Scroll Reveal
     const observer = new IntersectionObserver((entries) => {

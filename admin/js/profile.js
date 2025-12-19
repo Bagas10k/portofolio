@@ -34,8 +34,8 @@ async function loadProfile() {
             }
         }
     } catch (e) {
-        console.error(e);
-        alert('Error loading profile data');
+        console.error('Profile load error:', e);
+        // Silently handle error - data might still load from cache
     }
 }
 
