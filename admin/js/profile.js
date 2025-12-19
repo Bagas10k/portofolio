@@ -1,50 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadProfile();
     document.getElementById('profileForm').addEventListener('submit', updateProfile);
-    
-    // Add image preview
-    const avatarInput = document.getElementById('avatarInput');
-    if (avatarInput) {
-        avatarInput.addEventListener('change', previewAvatar);
-    }
 });
 
-function previewAvatar(e) {
-    const file = e.target.files[0];
-    const preview = document.getElementById('newAvatarPreview');
-    
-    if (file) {
-        // Validate file size
-        if (file.size > 5 * 1024 * 1024) {
-            alert('File too large! Maximum size is 5MB.');
-            e.target.value = '';
-            preview.innerHTML = '';
-            return;
-        }
-        
-        // Validate file type
-        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-        if (!validTypes.includes(file.type)) {
-            alert('Invalid file type! Only JPG, PNG, and WEBP are allowed.');
-            e.target.value = '';
-            preview.innerHTML = '';
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            preview.innerHTML = `
-                <div style="border: 2px dashed var(--primary); padding: 10px; border-radius: 8px; display: inline-block;">
-                    <p style="margin: 0 0 5px; color: var(--primary); font-weight: 500;">New Avatar Preview:</p>
-                    <img src="${event.target.result}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">
-                </div>
-            `;
-        };
-        reader.readAsDataURL(file);
-    } else {
-        preview.innerHTML = '';
-    }
-}
 
 async function loadProfile() {
     try {
