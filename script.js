@@ -211,21 +211,25 @@ async function loadProfile() {
             document.title = `${p.name} | ${p.role}`;
             
             
-            // Avatar - only show if exists in database
-            const avatarImg = document.querySelector('.avatar-image');
-            const avatarContainer = document.getElementById('avatarContainer');
+            // Avatar - show if exists in database
+            const avatarImages = document.querySelectorAll('.avatar-image');
+            const avatarContainers = document.querySelectorAll('.image-frame, .image-frame-poster, #heroAvatarContainer');
             
-            if(avatarImg && p.avatar) {
-                // Add timestamp to prevent caching
-                avatarImg.src = p.avatar + '?t=' + new Date().getTime();
-                if(avatarContainer) {
-                    avatarContainer.style.display = 'block';
-                }
+            if(p.avatar) {
+                const timestampedSrc = p.avatar + '?t=' + new Date().getTime();
+                
+                avatarImages.forEach(img => {
+                    img.src = timestampedSrc;
+                });
+
+                avatarContainers.forEach(container => {
+                     container.style.display = 'block';
+                });
             } else {
-                // Hide avatar if not in database
-                if(avatarContainer) {
-                    avatarContainer.style.display = 'none';
-                }
+                // Hide containers if no avatar
+                avatarContainers.forEach(container => {
+                     container.style.display = 'none';
+                });
             }
             
             // Hero

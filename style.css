@@ -546,6 +546,46 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0;
     transition: var(--transition-smooth);
 }
+/* Center Display Text */
+.display-center {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 2;
+    position: relative; /* Context for absolute image */
+}
+
+.hero-poster-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 400px;
+    z-index: -1; /* Behind text */
+    mix-blend-mode: multiply; /* Blends with text if light mode */
+    opacity: 0.8;
+    filter: grayscale(100%) contrast(1.2);
+    pointer-events: none;
+}
+
+body:not(.light-mode) .hero-poster-img {
+    mix-blend-mode: overlay; /* Better for dark mode */
+    opacity: 0.4;
+}
+
+.hero-poster-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.display-text {
+    font-size: var(--display-size);
+}
 
 .project-card:hover .project-overlay {
     opacity: 1;
