@@ -58,3 +58,14 @@ CREATE TABLE IF NOT EXISTS `profile` (
 INSERT INTO `profile` (`id`, `name`, `role`, `tagline`, `about_text`, `email`) 
 VALUES (1, 'Bagas', 'Programmer', 'Welcome to my portfolio', 'I am a programmer.', 'email@example.com')
 ON DUPLICATE KEY UPDATE `id`=`id`;
+
+-- Gallery Table for Image Management
+CREATE TABLE IF NOT EXISTS `gallery` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `filename` varchar(255) NOT NULL,
+  `filepath` varchar(255) NOT NULL,
+  `filesize` int(11) NOT NULL,
+  `filetype` varchar(50) NOT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
