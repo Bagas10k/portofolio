@@ -118,8 +118,9 @@ function createGalleryItem(img) {
             <div class="gallery-size">${filesize}</div>
         </div>
         <div class="gallery-actions">
-            <button class="btn-copy" onclick="copyURL('${url}')">📋 Copy URL</button>
-            <button class="btn-delete" onclick="deleteImage(${img.id})">🗑️ Delete</button>
+            <button class="btn-copy" onclick="copyURL('${url}')">📋 Copy</button>
+            <button class="btn-avatar" onclick="useAsAvatar('${img.filepath}', ${img.id})" style="background: var(--primary); color: var(--bg-primary);">👤 Avatar</button>
+            <button class="btn-delete" onclick="deleteImage(${img.id})">🗑️</button>
         </div>
     `;
     
@@ -145,6 +146,36 @@ function copyURL(url) {
         document.body.removeChild(input);
         alert('URL copied to clipboard!');
     });
+}
+
+async function useAsAvatar(filepath, imageId) {
+    if (!confirm('Use this image as your profile avatar?')) return;
+
+    try {
+        const formData = new FormData();
+        formData.append('avatar_from_gallery', filepath);
+        // Add other required fields (get from current profile)
+        formData.append('name', 'placeholder');  // Will be ignored by server
+        formData.append('role', 'placeholder');
+        formData.append('tagline', 'placeholder');
+        formData.append('about_text', 'placeholder');
+        formData.append('email', 'placeholder');
+
+        const res = await fetch('../api/profile.php', {
+            method: 'POST',
+            body: formData
+        });
+        const json = await res.json();
+
+        if (json.success) {
+            alert('Avatar updated successfully! Go to Profile page to see changes.');
+        } else {
+            alert('Failed to set avatar: ' + json.message);
+        }
+    } catch (err) {
+        console.error('Error setting avatar:', err);
+        alert('Error setting avatar');
+    }
 }
 
 async function deleteImage(id) {

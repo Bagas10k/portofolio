@@ -48,7 +48,35 @@ if ($method === 'POST') {
         exit;
     }
 
-    // Handle File Upload if present
+    // Check if avatar is selected from gallery
+    if (isset($_POST['avatar_from_gallery']) && !empty($_POST['avatar_from_gallery'])) {
+        $avatarPath = $_POST['avatar_from_gallery'];
+        error_log("Setting avatar from gallery: " . $avatarPath);
+        
+        // Validate that file exists
+        if (file_exists('../' . $avatarPath)) {
+            // Update only avatar field
+            $stmt = $conn->prepare("UPDATE profile SET avatar=? WHERE id=1");
+            $stmt->bind_param("s", $avatarPath);
+            
+            if ($stmt->execute()) {
+                error_log("Avatar updated successfully from gallery");
+                echo json_encode(['success' => true, 'avatar' => $avatarPath]);
+            } else {
+                error_log("Failed to update avatar: " . $stmt->error);
+                echo json_encode(['success' => false, 'message' => $stmt->error]);
+            }
+            $conn->close();
+            exit;
+        } else {
+            error_log("Gallery image not found: " . $avatarPath);
+            echo json_encode(['success' => false, 'message' => 'Image file not found']);
+            $conn->close();
+            exit;
+        }
+    }
+
+    // Handle File Upload if present (existing logic)
     $avatarPath = null;
     $uploadError = '';
 
