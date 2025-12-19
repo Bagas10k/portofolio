@@ -53,42 +53,70 @@ if ($method === 'POST') {
     $uploadError = '';
 
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FILE) {
+        error_log("Avatar upload attempt detected");
+        
         if ($_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
             $allowed = ['jpg', 'jpeg', 'png', 'webp'];
             $ext = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
             
+            error_log("File extension: " . $ext);
+            error_log("File size: " . $_FILES['avatar']['size']);
+            
             if (!in_array($ext, $allowed)) {
                 $uploadError = 'Invalid file type. Only JPG, JPEG, PNG, and WEBP are allowed.';
+                error_log("Upload error: Invalid file type - " . $ext);
             } elseif ($_FILES['avatar']['size'] > 5 * 1024 * 1024) { // 5MB max
                 $uploadError = 'File too large. Maximum size is 5MB.';
+                error_log("Upload error: File too large - " . $_FILES['avatar']['size']);
             } else {
-                $uploadDir = '../assets/images/profile/';
-                if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
-                
-                // Get current avatar from database to delete old file
-                $getCurrentAvatar = $conn->query("SELECT avatar FROM profile WHERE id=1 LIMIT 1");
-                if ($getCurrentAvatar && $getCurrentAvatar->num_rows > 0) {
-                    $currentRow = $getCurrentAvatar->fetch_assoc();
-                    $oldAvatarPath = $currentRow['avatar'];
-                    
-                    // Delete old avatar file if it exists
-                    if ($oldAvatarPath && file_exists('../' . $oldAvatarPath)) {
-                        unlink('../' . $oldAvatarPath);
+                try {
+                    $uploadDir = '../assets/images/profile/';
+                    if (!file_exists($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                        error_log("Created upload directory: " . $uploadDir);
                     }
-                }
-                
-                // Use fixed filename: avatar.{ext}
-                $newFilename = 'avatar.' . $ext;
-                $destPath = $uploadDir . $newFilename;
-                
-                if (move_uploaded_file($_FILES['avatar']['tmp_name'], $destPath)) {
-                    $avatarPath = 'assets/images/profile/' . $newFilename;
-                } else {
-                    $uploadError = 'Failed to move uploaded file. Check directory permissions.';
+                    
+                    // Get current avatar from database to delete old file
+                    $getCurrentAvatar = $conn->query("SELECT avatar FROM profile WHERE id=1 LIMIT 1");
+                    if ($getCurrentAvatar && $getCurrentAvatar->num_rows > 0) {
+                        $currentRow = $getCurrentAvatar->fetch_assoc();
+                        $oldAvatarPath = $currentRow['avatar'];
+                        
+                        // Delete old avatar file if it exists and different extension
+                        if ($oldAvatarPath && file_exists('../' . $oldAvatarPath)) {
+                            $oldExt = pathinfo($oldAvatarPath, PATHINFO_EXTENSION);
+                            // Delete if different extension or force replace
+                            if (strtolower($oldExt) !== $ext || true) {
+                                if (unlink('../' . $oldAvatarPath)) {
+                                    error_log("Deleted old avatar: " . $oldAvatarPath);
+                                } else {
+                                    error_log("Failed to delete old avatar: " . $oldAvatarPath);
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Use fixed filename: avatar.{ext}
+                    $newFilename = 'avatar.' . $ext;
+                    $destPath = $uploadDir . $newFilename;
+                    
+                    error_log("Attempting to move file to: " . $destPath);
+                    
+                    if (move_uploaded_file($_FILES['avatar']['tmp_name'], $destPath)) {
+                        $avatarPath = 'assets/images/profile/' . $newFilename;
+                        error_log("Successfully uploaded avatar to: " . $avatarPath);
+                    } else {
+                        $uploadError = 'Failed to move uploaded file. Check directory permissions.';
+                        error_log("Failed to move uploaded file from " . $_FILES['avatar']['tmp_name'] . " to " . $destPath);
+                    }
+                } catch (Exception $e) {
+                    $uploadError = 'Upload exception: ' . $e->getMessage();
+                    error_log("Upload exception: " . $e->getMessage());
                 }
             }
         } else {
             $uploadError = 'Upload error code: ' . $_FILES['avatar']['error'];
+            error_log("Upload error code: " . $_FILES['avatar']['error']);
         }
     }
 
