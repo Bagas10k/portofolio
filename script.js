@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
             navLinks.classList.remove('active'); // Close mobile menu on click
 
             const targetId = this.getAttribute('href');
-            const targetOption = document.querySelector(targetId);
+            const targetElement = document.querySelector(targetId);
             
-            if (targetOption) {
-                targetOption.scrollIntoView({
+            if (targetElement) {
+                targetElement.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
@@ -88,13 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
-    // Observe elements
-    // We will add 'fade-in' class to elements in HTML to use this
+    // Observe elements with animate-on-scroll class
     const animatedElements = document.querySelectorAll('.animate-on-scroll');
-    // We will add 'fade-in' class to elements in HTML to use this
-    // const animatedElements = document.querySelectorAll('.animate-on-scroll');
-    // animatedElements.forEach(el => observer.observe(el));
-    // The previous block was duplicated by mistake. Removing the extra declaration.
+    animatedElements.forEach(el => observer.observe(el));
     
     // Contact Form Handler
     const contactForm = document.querySelector('.contact-form');
@@ -144,7 +140,16 @@ async function loadProjects() {
 
     try {
         const res = await fetch('api/get_projects.php?t=' + new Date().getTime());
-        const projects = await res.json();
+        const text = await res.text();
+        console.log('Homepage Projects Raw:', text);
+        
+        let projects;
+        try {
+            projects = JSON.parse(text);
+        } catch (e) {
+            console.error('Homepage JSON Error:', text);
+            return;
+        }
 
         if (projects.length > 0) {
             grid.innerHTML = '';

@@ -6,6 +6,11 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // GET
 if ($method === 'GET') {
+    if (defined('DB_ERROR') && DB_ERROR) {
+        echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+        exit;
+    }
+
     $sql = "SELECT * FROM skills";
     $result = $conn->query($sql);
     $skills = [];
@@ -57,5 +62,4 @@ if ($method === 'DELETE') {
     }
     exit;
 }
-$conn->close();
 ?>

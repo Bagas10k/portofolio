@@ -30,6 +30,7 @@ if ($method === 'GET') {
     }
     
     echo json_encode($projects);
+    $conn->close();
     exit;
 }
 ?>

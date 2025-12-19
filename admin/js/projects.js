@@ -13,7 +13,17 @@ async function loadProjects() {
         // Actually, we need to read it. Let's use a small PHP script 'api/get_projects.php' if it exists or create one.
         // Checking directory list... 'get_projects.php' exists!
         const res = await fetch('../api/get_projects.php');
-        const data = await res.json();
+        const text = await res.text();
+        console.log('Raw Projects Data:', text); // DEBUG
+        
+        // Try parsing JSON
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch(e) {
+            console.error('Failed to parse JSON:', text);
+            throw new Error('Invalid JSON response from server');
+        }
         
         // Response format checking...
         // get_projects.php usually returns list directly or {data: []}
@@ -32,7 +42,7 @@ async function loadProjects() {
                     <img src="../${p.image}" alt="${p.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
                 </td>
                 <td>${p.title}</td>
-                <td style="color: var(--text-secondary);">${p.desc.substring(0, 50)}...</td>
+                <td style="color: var(--text-secondary);">${(p.description || '').substring(0, 50)}...</td>
                 <td>
                     <button class="action-btn btn-danger" onclick="deleteProject('${p.id}')">Delete</button>
                 </td>

@@ -6,6 +6,11 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // GET
 if ($method === 'GET') {
+    if (defined('DB_ERROR') && DB_ERROR) {
+        echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+        exit;
+    }
+
     $sql = "SELECT * FROM education ORDER BY year DESC";
     $result = $conn->query($sql);
     $data = [];
@@ -63,5 +68,4 @@ if ($method === 'DELETE') {
     }
     exit;
 }
-$conn->close();
 ?>
