@@ -41,47 +41,68 @@
     </nav>
 
     <main>
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <span class="greeting">Hello, I'm</span>
-                <h1 class="glitch-text" data-text="Bagas" id="heroName">Loading...</h1>
-                <h2 class="role" id="heroRole">Loading...</h2>
-                <p class="tagline" id="heroTagline">Loading...</p>
-                <div class="cta-group">
-                    <a href="#projects" class="btn btn-primary">View Portfolio</a>
-                    <a href="#contact" class="btn btn-outline">Contact Me</a>
+        <section id="home" class="hero-poster">
+            <div class="poster-container">
+                <div class="corner-tl">
+                    <span class="meta-label">ROLE / SPECIALTY</span>
+                    <h2 class="meta-value" id="heroRole">Loading...</h2>
+                </div>
+                
+                <div class="corner-tr">
+                    <span class="meta-label">AVAILABLE FOR WORK</span>
+                    <span class="meta-value">2025 OPENINGS</span>
+                </div>
+
+                <div class="display-center">
+                    <h1 class="display-text">
+                        DIGITAL<br>
+                        <span class="outline-text">CREATOR</span><br>
+                        <span id="heroName">BAGAS</span><span class="accent-period">.</span>
+                    </h1>
+                </div>
+
+                <div class="corner-bl">
+                    <div class="scroll-down">
+                        <span class="arrow-down">↓</span> SCROLL
+                    </div>
+                </div>
+
+                <div class="corner-br">
+                    <p id="heroTagline" class="poster-tagline">Loading...</p>
+                    <div class="cta-group-poster">
+                        <a href="#projects" class="btn-link">VIEW WORK</a>
+                    </div>
                 </div>
             </div>
-            <div class="hero-visual">
-                <!-- Abstract geometric tech shape constructed via CSS/SVG later -->
-                <div class="tech-circle"></div>
-            </div>
+            <!-- Background Elements -->
+            <div class="bg-noise"></div>
         </section>
 
-        <!-- Placeholder sections for structure -->
         <section id="about" class="section animate-on-scroll">
             <div class="container about-container">
-                <h2 class="section-title">About Me</h2>
-                <div class="about-content">
-                    <div class="about-text">
-                        <div id="aboutText">
-                            <p>Loading bio...</p>
-                        </div>
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <span class="stat-number" id="statExp">0+</span>
-                                <span class="stat-label">Years Exp.</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-number" id="statProjects">0+</span>
-                                <span class="stat-label">Projects</span>
-                            </div>
-                        </div>
+                <div class="about-grid">
+                    <div class="about-headline">
+                         <h2 class="display-medium">ABOUT</h2>
+                         <div class="image-frame-poster" id="avatarContainer" style="display: none;">
+                             <img src="" alt="Profile" class="avatar-image">
+                         </div>
                     </div>
-                    <div class="about-image">
-                       <div class="image-frame" id="avatarContainer" style="display: none;">
-                            <img src="" alt="Profile" class="avatar-image">
-                       </div>
+                    
+                    <div class="about-details">
+                         <div id="aboutText" class="editorial-text">
+                            <p>Loading bio...</p>
+                         </div>
+                         
+                         <div class="stats-poster">
+                             <div class="stat-block">
+                                 <span class="stat-number" id="statExp">0</span>
+                                 <span class="stat-label">YEARS EXP</span>
+                             </div>
+                             <div class="stat-block">
+                                 <span class="stat-number" id="statProjects">0</span>
+                                 <span class="stat-label">PROJECTS</span>
+                             </div>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -157,9 +178,27 @@
         </section>
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 Bagas. Built with <span class="heart">♥</span> and code.</p>
+    <footer class="footer-poster">
+        <div class="container">
+            <div class="footer-poster-grid">
+                <div class="fp-col">
+                    <h4>SOCIALS</h4>
+                    <div class="footer-links-vertical" id="footerSocials">
+                        <!-- Cloned via JS or just hardcoded/empty for now -->
+                        <a href="#">INSTAGRAM</a>
+                        <a href="#">LINKEDIN</a>
+                        <a href="#">GITHUB</a>
+                    </div>
+                </div>
+                <div class="fp-col">
+                    <h4>CONTACT</h4>
+                    <a href="mailto:hello@bagas.com" class="footer-email">HELLO@BAGAS.COM</a>
+                    <p class="copyright">&copy; 2025 BAGAS</p>
+                </div>
+            </div>
+            <div class="footer-big-text">
+                <h2>LET'S WORK<br>TOGETHER</h2>
+            </div>
         </div>
     </footer>
 
