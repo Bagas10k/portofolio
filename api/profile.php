@@ -133,23 +133,29 @@ if ($method === 'POST') {
 
     // Build Query
     if ($avatarPath) {
+        error_log("Updating profile WITH new avatar: " . $avatarPath);
         $stmt = $conn->prepare("UPDATE profile SET name=?, role=?, tagline=?, about_text=?, avatar=?, years_exp=?, projects_count=?, email=?, linkedin=?, github=?, dribbble=? WHERE id=1");
         $stmt->bind_param("sssssssssss", $name, $role, $tagline, $about_text, $avatarPath, $years_exp, $projects_count, $email, $linkedin, $github, $dribbble);
     } else {
+        error_log("Updating profile WITHOUT new avatar");
         $stmt = $conn->prepare("UPDATE profile SET name=?, role=?, tagline=?, about_text=?, years_exp=?, projects_count=?, email=?, linkedin=?, github=?, dribbble=? WHERE id=1");
         $stmt->bind_param("ssssssssss", $name, $role, $tagline, $about_text, $years_exp, $projects_count, $email, $linkedin, $github, $dribbble);
     }
 
     if ($stmt->execute()) {
+        error_log("Profile update successful. Rows affected: " . $stmt->affected_rows);
         $response = ['success' => true];
         if ($avatarPath) {
             $response['avatar'] = $avatarPath;
+            error_log("Returning avatar path: " . $avatarPath);
         }
         if ($uploadError) {
             $response['warning'] = $uploadError;
+            error_log("Upload had warning: " . $uploadError);
         }
         echo json_encode($response);
     } else {
+        error_log("Profile update FAILED: " . $stmt->error);
         echo json_encode(['success' => false, 'message' => $stmt->error]);
     }
     $conn->close();
