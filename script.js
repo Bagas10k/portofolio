@@ -199,10 +199,22 @@ async function loadProfile() {
             const p = json.data;
             document.title = `${p.name} | ${p.role}`;
             
-            // Avatar
+            
+            // Avatar - only show if exists in database
             const avatarImg = document.querySelector('.avatar-image');
+            const avatarContainer = document.getElementById('avatarContainer');
+            
             if(avatarImg && p.avatar) {
-                avatarImg.src = p.avatar;
+                // Add timestamp to prevent caching
+                avatarImg.src = p.avatar + '?t=' + new Date().getTime();
+                if(avatarContainer) {
+                    avatarContainer.style.display = 'block';
+                }
+            } else {
+                // Hide avatar if not in database
+                if(avatarContainer) {
+                    avatarContainer.style.display = 'none';
+                }
             }
             
             // Hero
