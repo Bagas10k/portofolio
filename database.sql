@@ -50,7 +50,8 @@ CREATE TABLE IF NOT EXISTS `profile` (
   `email` varchar(100) NOT NULL,
   `linkedin` varchar(255) DEFAULT '',
   `github` varchar(255) DEFAULT '',
-  `dribbble` varchar(255) DEFAULT '',
+  `instagram` varchar(255) DEFAULT '',
+  `tiktok` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

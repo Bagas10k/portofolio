@@ -64,7 +64,8 @@ async function loadProfile() {
             if (d.socials) {
                 document.forms['profileForm']['linkedin'].value = d.socials.linkedin || '';
                 document.forms['profileForm']['github'].value = d.socials.github || '';
-                document.forms['profileForm']['dribbble'].value = d.socials.dribbble || '';
+                document.forms['profileForm']['instagram'].value = d.socials.instagram || '';
+                document.forms['profileForm']['tiktok'].value = d.socials.tiktok || '';
             }
             
             if(d.avatar) {
