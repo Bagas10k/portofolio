@@ -1,7 +1,50 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadProfile();
     document.getElementById('profileForm').addEventListener('submit', updateProfile);
+    
+    // Add image preview
+    const avatarInput = document.getElementById('avatarInput');
+    if (avatarInput) {
+        avatarInput.addEventListener('change', previewAvatar);
+    }
 });
+
+function previewAvatar(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('newAvatarPreview');
+    
+    if (file) {
+        // Validate file size
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File too large! Maximum size is 5MB.');
+            e.target.value = '';
+            preview.innerHTML = '';
+            return;
+        }
+        
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            alert('Invalid file type! Only JPG, PNG, and WEBP are allowed.');
+            e.target.value = '';
+            preview.innerHTML = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            preview.innerHTML = `
+                <div style="border: 2px dashed var(--primary); padding: 10px; border-radius: 8px; display: inline-block;">
+                    <p style="margin: 0 0 5px; color: var(--primary); font-weight: 500;">New Avatar Preview:</p>
+                    <img src="${event.target.result}" style="width:100px; height:100px; object-fit:cover; border-radius:8px;">
+                </div>
+            `;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.innerHTML = '';
+    }
+}
 
 async function loadProfile() {
     try {
@@ -25,7 +68,10 @@ async function loadProfile() {
             }
             
             if(d.avatar) {
-                document.getElementById('currentAvatarPreview').innerHTML = `<img src="../${d.avatar}" style="width:100px; height:100px; object-fit:cover; border-radius:8px; border:1px solid #333;">`;
+                document.getElementById('currentAvatarPreview').innerHTML = `
+                    <p style="margin: 0 0 5px; color: var(--text-secondary); font-weight: 500;">Current Avatar:</p>
+                    <img src="../${d.avatar}" style="width:100px; height:100px; object-fit:cover; border-radius:8px; border:1px solid #333;">
+                `;
             }
         }
     } catch (e) {
@@ -41,18 +87,23 @@ async function updateProfile(e) {
     btn.disabled = true;
 
     const form = e.target;
-    // Use FormData for file upload
     const formData = new FormData(form);
 
     try {
         const res = await fetch('../api/profile.php', {
             method: 'POST',
-            body: formData // Fetch automatically sets Content-Type to multipart/form-data
+            body: formData
         });
         const json = await res.json();
         
         if (json.success) {
-            alert('Profile updated successfully!');
+            if (json.warning) {
+                alert('Profile updated! Note: ' + json.warning);
+            } else {
+                alert('Profile updated successfully!');
+            }
+            // Reload to show new avatar
+            window.location.reload();
         } else {
             alert('Update failed: ' + json.message);
         }

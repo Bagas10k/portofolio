@@ -50,20 +50,32 @@ if ($method === 'POST') {
 
     // Handle File Upload if present
     $avatarPath = null;
-    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
-        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-        $ext = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
-        
-        if (in_array($ext, $allowed)) {
-            $uploadDir = '../assets/images/profile/';
-            if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
+    $uploadError = '';
+
+    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+            $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+            $ext = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
             
-            $newFilename = 'avatar_' . time() . '.' . $ext;
-            $destPath = $uploadDir . $newFilename;
-            
-            if (move_uploaded_file($_FILES['avatar']['tmp_name'], $destPath)) {
-                $avatarPath = 'assets/images/profile/' . $newFilename;
+            if (!in_array($ext, $allowed)) {
+                $uploadError = 'Invalid file type. Only JPG, JPEG, PNG, and WEBP are allowed.';
+            } elseif ($_FILES['avatar']['size'] > 5 * 1024 * 1024) { // 5MB max
+                $uploadError = 'File too large. Maximum size is 5MB.';
+            } else {
+                $uploadDir = '../assets/images/profile/';
+                if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
+                
+                $newFilename = 'avatar_' . time() . '.' . $ext;
+                $destPath = $uploadDir . $newFilename;
+                
+                if (move_uploaded_file($_FILES['avatar']['tmp_name'], $destPath)) {
+                    $avatarPath = 'assets/images/profile/' . $newFilename;
+                } else {
+                    $uploadError = 'Failed to move uploaded file. Check directory permissions.';
+                }
             }
+        } else {
+            $uploadError = 'Upload error code: ' . $_FILES['avatar']['error'];
         }
     }
 
@@ -88,11 +100,18 @@ if ($method === 'POST') {
     }
 
     if ($stmt->execute()) {
-        echo json_encode(['success' => true]);
+        $response = ['success' => true];
+        if ($avatarPath) {
+            $response['avatar'] = $avatarPath;
+        }
+        if ($uploadError) {
+            $response['warning'] = $uploadError;
+        }
+        echo json_encode($response);
     } else {
         echo json_encode(['success' => false, 'message' => $stmt->error]);
     }
+    $conn->close();
     exit;
 }
-$conn->close();
 ?>

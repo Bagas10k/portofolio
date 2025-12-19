@@ -54,9 +54,10 @@
 
                     <div class="form-group">
                         <label>Profile Avatar</label>
-                        <input type="file" name="avatar" accept="image/*">
-                        <small style="color:var(--text-secondary)">Leave empty to keep current image. Recommended: Square, 500x500.</small>
+                        <input type="file" name="avatar" id="avatarInput" accept="image/*">
+                        <small style="color:var(--text-secondary)">Leave empty to keep current image. Max 5MB. Recommended: Square, 500x500.</small>
                         <div id="currentAvatarPreview" style="margin-top:10px;"></div>
+                        <div id="newAvatarPreview" style="margin-top:10px;"></div>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
