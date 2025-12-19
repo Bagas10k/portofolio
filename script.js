@@ -296,35 +296,18 @@ async function loadSkills() {
                 return;
             }
 
-            // Group by Category
-            const categories = {};
-            skills.forEach(s => {
-                if (!categories[s.category]) categories[s.category] = [];
-                categories[s.category].push(s);
-            });
-
-            container.innerHTML = '';
+            // Render Skills as Pills in Hero (Simplified)
+            // Render Skills as Pills in Hero (Simplified)
+            const allSkills = json.data;
+            let skillsHtml = '';
             
-            for (const [catName, catSkills] of Object.entries(categories)) {
-                const catDiv = document.createElement('div');
-                catDiv.className = 'skill-category';
-                
-                let skillsHtml = '';
-                catSkills.forEach(s => {
-                    skillsHtml += `
-                        <div class="skill-card">
-                            <span class="icon">${s.icon}</span>
-                            <span>${s.name}</span>
-                        </div>
-                    `;
-                });
-
-                catDiv.innerHTML = `
-                    <h3>${catName}</h3>
-                    <div class="skill-list">${skillsHtml}</div>
-                `;
-                container.appendChild(catDiv);
+            if(allSkills.length > 0) {
+                 skillsHtml = allSkills.map(s => `<span class="skill-pill">${s.skill_name || s.name}</span>`).join('');
+            } else {
+                 skillsHtml = '<span class="skill-pill">Loading...</span>';
             }
+            container.innerHTML = skillsHtml;
+
         }
     } catch(e) {
         console.error(e);
@@ -349,12 +332,11 @@ async function loadEducation() {
 
             container.innerHTML = data.map(edu => `
                 <div class="timeline-item animate-on-scroll">
-                    <span class="timeline-year">${edu.year}</span>
-                    <div class="timeline-content">
-                        <h3>${edu.school}</h3>
-                        <h4>${edu.degree}</h4>
-                        ${edu.description ? `<p>${edu.description}</p>` : ''}
-                    </div>
+                     <!-- Centered content -->
+                    <div class="date-badge">${edu.year}</div>
+                    <h3 class="timeline-title">${edu.school}</h3>
+                    <div class="timeline-subtitle">${edu.degree}</div>
+                    ${edu.description ? `<p class="timeline-desc">${edu.description}</p>` : ''}
                 </div>
             `).join('');
             

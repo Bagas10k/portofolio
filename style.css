@@ -254,16 +254,54 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Mobile Responsive */
 @media (max-width: 992px) {
-/* Hero Poster Section */
+/* Hero Poster Section Global */
 .hero-poster {
     min-height: 100vh;
-    padding: 160px 40px 60px 40px; /* Increased top padding to 160px */
+    padding: 220px 40px 60px 40px; /* Global fix for header overlap */
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
 }
+
+/* Hero Skills List - Horizontal Marquee style */
+.hero-skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.hero-skills-list .skill-pill {
+    padding: 8px 16px;
+    border: 1px solid var(--text-primary);
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    background: transparent;
+}
+
+/* Typography Update */
+.section-title {
+    font-size: clamp(3rem, 5vw, 6rem); /* Massive like About */
+    line-height: 0.9;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 60px;
+    letter-spacing: -0.02em;
+    text-align: center; 
+    color: var(--text-primary);
+}
+}
+/* Mobile Responsive */
+@media (max-width: 992px) {
+    .hero-poster {
+        padding: 160px 20px 40px 20px; /* Slightly less on mobile but still clear */
+    }
     
     .poster-container {
         display: flex;
@@ -862,8 +900,27 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center; /* Center alignment */
 }
 
-/* Remove the line and dots */
-.timeline::after, 
+/* Timeline Minimalist Centered Hybrid */
+.timeline {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center; /* Center alignment */
+}
+
+/* Restore the line */
+.timeline::after {
+    display: block;
+    content: '';
+    position: absolute;
+    width: 2px;
+    background: var(--text-primary); /* Solid line */
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Centered Line */
+}
+
 .timeline-item::after {
     display: none; 
 }
