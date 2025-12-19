@@ -18,8 +18,15 @@ if ($method === 'GET') {
     if ($result) {
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                // Convert comma-separated tags to array
-                $row['tags'] = $row['tags'] ? explode(',', $row['tags']) : [];
+                // Map DB columns to Frontend expectations
+                $row['tags'] = !empty($row['tech_stack']) ? explode(',', $row['tech_stack']) : [];
+                $row['link'] = !empty($row['project_url']) ? $row['project_url'] : '#';
+                
+                // Add github link if exists
+                if (!empty($row['github_url'])) {
+                    $row['github'] = $row['github_url'];
+                }
+                
                 $projects[] = $row;
             }
         }

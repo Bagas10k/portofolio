@@ -599,13 +599,35 @@ body:not(.light-mode) .hero-poster-img {
     padding: 30px;
 }
 
-.project-title {
-    font-size: 1.5rem;
-    margin-bottom: 12px;
-    background: linear-gradient(to right, #fff, #ccc);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* Brutalist Link Styles */
+.project-link, .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--text-primary);
+    padding-bottom: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.project-link:hover, .btn-link:hover {
+    color: var(--white);
+    background: var(--text-primary);
+    padding: 4px 10px;
+    border-color: transparent;
+}
+
+.project-link i, .btn-link i {
+    transition: transform 0.3s ease;
+}
+
+.project-link:hover i, .btn-link:hover i {
+    transform: translateX(5px);
 }
 
 .project-desc {
