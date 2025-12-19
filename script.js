@@ -297,7 +297,6 @@ async function loadSkills() {
             }
 
             // Render Skills as Pills in Hero (Simplified)
-            // Render Skills as Pills in Hero (Simplified)
             const allSkills = json.data;
             let skillsHtml = '';
             

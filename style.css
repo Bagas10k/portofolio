@@ -97,11 +97,11 @@ h1, h2, h3, h4, h5, h6 {
 .navbar {
     position: fixed;
     top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: var(--container-width);
-    padding: 16px 32px;
+    right: 40px; /* Right aligned card */
+    left: auto; /* Remove centering */
+    transform: none; /* Remove centering */
+    width: auto; /* Shrink to fit content */
+    padding: 12px 12px; /* Small circular/pill padding */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -542,21 +542,26 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Projects Section */
 /* Projects Section Brutalist */
+/* Projects Section Brutalist */
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns */
-    gap: 40px;
+    grid-template-columns: repeat(3, 1fr) !important; /* Force 3 columns ALWAYS */
+    gap: 20px; /* Reduced gap to make cards smaller */
 }
 
+/* Remove responsive behavior for columns as requested */
 @media (max-width: 1024px) {
+    /* override previous adjustments */
     .projects-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr) !important;
     }
 }
 
 @media (max-width: 600px) {
+    /* Even on mobile? User said "jangan responsif... tetap 3 baris ke samping" */
     .projects-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10px; /* Smaller gap on mobile */
     }
 }
 
@@ -1208,4 +1213,56 @@ body:not(.light-mode) .timeline-item:hover .timeline-title {
     .footer-links-vertical a, .footer-email {
         font-size: 1.5rem;
     }
+}
+
+/* --- Final Refinements for Education --- */
+/* Overriding previous timeline styles to ensure correct look */
+.date-badge {
+    display: inline-block;
+    padding: 8px 24px;
+    background: var(--text-primary);
+    color: var(--bg-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    z-index: 2;
+    position: relative;
+}
+
+.timeline-title {
+    font-size: 1.5rem !important; /* Force smaller size */
+    font-weight: 800;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    background: var(--bg-color);
+    display: inline-block;
+    padding: 0 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.timeline-subtitle {
+    font-size: 1rem !important;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    background: var(--bg-color);
+    display: inline-block;
+    padding: 0 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.timeline-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
+    color: var(--text-secondary);
+    background: var(--bg-color);
+    padding: 0 10px;
+    position: relative;
+    z-index: 2;
 }
