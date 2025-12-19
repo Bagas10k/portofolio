@@ -65,7 +65,20 @@ if ($method === 'POST') {
                 $uploadDir = '../assets/images/profile/';
                 if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
                 
-                $newFilename = 'avatar_' . time() . '.' . $ext;
+                // Get current avatar from database to delete old file
+                $getCurrentAvatar = $conn->query("SELECT avatar FROM profile WHERE id=1 LIMIT 1");
+                if ($getCurrentAvatar && $getCurrentAvatar->num_rows > 0) {
+                    $currentRow = $getCurrentAvatar->fetch_assoc();
+                    $oldAvatarPath = $currentRow['avatar'];
+                    
+                    // Delete old avatar file if it exists
+                    if ($oldAvatarPath && file_exists('../' . $oldAvatarPath)) {
+                        unlink('../' . $oldAvatarPath);
+                    }
+                }
+                
+                // Use fixed filename: avatar.{ext}
+                $newFilename = 'avatar.' . $ext;
                 $destPath = $uploadDir . $newFilename;
                 
                 if (move_uploaded_file($_FILES['avatar']['tmp_name'], $destPath)) {
