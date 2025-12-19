@@ -266,7 +266,9 @@ async function loadProfile() {
                     if(url && url !== '#') {
                         const a = document.createElement('a');
                         a.href = url;
-                        a.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+                        a.textContent = key.toUpperCase(); // Text link requested
+                        a.className = 'btn-link'; // Brutalist style
+                        a.target = '_blank';
                         socialsContainer.appendChild(a);
                     }
                 });
