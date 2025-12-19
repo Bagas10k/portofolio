@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `profile` (
   `role` varchar(100) NOT NULL,
   `tagline` text NOT NULL,
   `about_text` text NOT NULL,
-  `avatar` varchar(255) DEFAULT 'assets/images/profile/avatar.png',
+  `avatar` varchar(255) DEFAULT NULL,
   `years_exp` varchar(20) DEFAULT '0',
   `projects_count` varchar(20) DEFAULT '0',
   `email` varchar(100) NOT NULL,
