@@ -253,7 +253,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Mobile Responsive */
-@media (max-width: 992px) {
 /* Hero Poster Section Global */
 .hero-poster {
     min-height: 100vh;
@@ -296,8 +295,9 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center; 
     color: var(--text-primary);
 }
-}
+
 /* Mobile Responsive */
+
 @media (max-width: 992px) {
     .hero-poster {
         padding: 160px 20px 40px 20px; /* Slightly less on mobile but still clear */

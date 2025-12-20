@@ -289,30 +289,25 @@ async function loadSkills() {
         const res = await fetch('api/skills.php?t=' + new Date().getTime());
         const json = await res.json();
         
-        if (json.success) {
             const skills = json.data;
+            console.log('Skills loaded:', skills); // Debug
+
             if (skills.length === 0) {
-                container.innerHTML = '<div style="color:var(--text-secondary)">No skills added yet.</div>';
+                container.innerHTML = '<span class="skill-pill">No skills found in DB</span>';
                 return;
             }
 
-            // Render Skills as Pills in Hero (Simplified)
-            const allSkills = json.data;
-            let skillsHtml = '';
-            
-            if(allSkills.length > 0) {
-                 skillsHtml = allSkills.map(s => `<span class="skill-pill">${s.skill_name || s.name}</span>`).join('');
-            } else {
-                 skillsHtml = '<span class="skill-pill">Loading...</span>';
-            }
-            container.innerHTML = skillsHtml;
+            // Render Skills
+            container.innerHTML = skills.map(s => {
+                const name = s.skill_name || s.name || 'Unnamed Skill'; // Robust fallback
+                return `<span class="skill-pill">${name}</span>`;
+            }).join('');
 
-        }
     } catch(e) {
-        console.error(e);
-        container.innerHTML = 'Error loading skills.';
-    }
-}
+        console.error('Skills error:', e);
+        container.innerHTML = '<span class="skill-pill">Error loading skills</span>';
+    }}
+
 
 async function loadEducation() {
     const container = document.getElementById('educationTimeline');
@@ -350,7 +345,8 @@ async function loadEducation() {
             
             container.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
         }
-    } catch (err) {
+    } 
+    catch (err) {
         console.error('Error loading education:', err);
         container.innerHTML = '<p>Error loading education history.</p>';
     }
