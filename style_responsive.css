@@ -1,0 +1,126 @@
+/* ========================================
+   RESPONSIVE MEDIA QUERIES
+   ======================================== */
+
+/* Tablet & Below (992px) */
+@media (max-width: 992px) {
+    /* About Section */
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+    
+    .image-frame-poster {
+        margin: 0 auto;
+        width: 70%;
+        max-width: 400px;
+    }
+    
+    /* Contact Section */
+    .contact-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .contact-details {
+        text-align: center;
+    }
+}
+
+/* Mobile (768px) */
+@media (max-width: 768px) {
+    /* Global Section Padding */
+    .section {
+        padding: 80px 20px;
+    }
+    
+    /* Projects - Reduce to 2 columns */
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px;
+    }
+    
+    .project-card {
+        padding: 15px;
+    }
+    
+    .project-title {
+        font-size: 1rem;
+    }
+    
+    /* Section Titles */
+    .section-title {
+        font-size: clamp(2.5rem, 8vw, 4rem);
+        margin-bottom: 40px;
+    }
+    
+    /* Footer */
+    .footer-big-text h2 {
+        font-size: clamp(2.5rem, 8vw, 5rem);
+    }
+    
+    .footer-poster {
+        padding: 80px 20px 60px 20px;
+    }
+    
+    /* Timeline */
+    .timeline {
+        max-width: 100%;
+        padding: 0 20px;
+    }
+    
+    .timeline-item {
+        margin-bottom: 50px;
+    }
+}
+
+/* Small Mobile (480px) */
+@media (max-width: 480px) {
+    /* Hero - Extra Compact */
+    .display-text {
+        font-size: clamp(2.5rem, 9vw, 4rem);
+    }
+    
+    .poster-container {
+        padding: 50px 15px 30px 15px;
+        gap: 15px;
+    }
+    
+    /* Projects - Single Column */
+    .projects-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
+    }
+    
+    .project-card {
+        padding: 20px;
+    }
+    
+    .project-title {
+        font-size: 1.2rem;
+    }
+    
+    /* Skills Pills - Smaller */
+    .hero-skills-list .skill-pill {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+    }
+    
+    /* Contact Form */
+    .contact-form {
+        padding: 30px 20px;
+    }
+    
+    /* Section Padding */
+    .section {
+        padding: 60px 15px;
+    }
+    
+    /* Navbar - Smaller */
+    .navbar {
+        top: 10px;
+        right: 15px;
+        padding: 10px;
+    }
+}
