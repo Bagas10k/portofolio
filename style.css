@@ -262,15 +262,95 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Mobile Responsive */
-/* Hero Poster Section Global */
+/* Hero Poster Section - Full Screen Layout */
 .hero-poster {
-    min-height: 100vh;
-    padding: 10px 40px 60px 40px; /* Global fix for header overlap */
+    height: 100vh; /* Exactly one screen */
+    max-height: 100vh;
+    padding: 0;
     position: relative;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
     overflow: hidden;
+    background: var(--bg-color);
+}
+
+.poster-container {
+    width: 100%;
+    max-width: var(--container-width);
+    height: 100%;
+    padding: 100px 60px 60px 60px; /* Top space for navbar */
+    display: grid;
+    grid-template-rows: auto 1fr auto; /* Top | Center | Bottom */
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    position: relative;
+}
+
+/* Corner Metadata */
+.corner-tl {
+    grid-row: 1;
+    grid-column: 1;
+    text-align: left;
+}
+
+.corner-tr {
+    grid-row: 1;
+    grid-column: 2;
+    text-align: right;
+}
+
+.meta-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.meta-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: uppercase;
+}
+
+/* Center Display */
+.display-center {
+    grid-row: 2;
+    grid-column: 1 / -1; /* Span both columns */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.display-text {
+    font-size: clamp(4rem, 12vw, 10rem);
+    line-height: 0.9;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    text-align: center; /* Centered text */
+}
+
+/* Bottom Section */
+.poster-bottom-center {
+    grid-row: 3;
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+}
+
+.poster-tagline {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 600px;
 }
 
 /* Hero Skills List - Horizontal Marquee style */
@@ -309,32 +389,41 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 992px) {
     .hero-poster {
-        padding: 160px 20px 40px 20px; /* Slightly less on mobile but still clear */
+        height: auto; /* Natural flow on mobile */
+        min-height: 100vh;
+        padding: 20px;
     }
     
     .poster-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        min-height: 80vh;
+        padding: 120px 20px 40px 20px;
+        grid-template-rows: auto auto 1fr auto; /* Stack: corner1, corner2, center, bottom */
+        grid-template-columns: 1fr;
+        gap: 25px;
     }
     
-    .corner-tr, .corner-tl {
-        position: static;
-        margin-bottom: 20px;
+    .corner-tl,
+    .corner-tr {
+        grid-column: 1;
         text-align: left;
+    }
+    
+    .corner-tr {
+        grid-row: 2;
+    }
+    
+    .display-center {
+        grid-row: 3;
+    }
+    
+    .poster-bottom-center {
+        grid-row: 4;
     }
     
     .display-text {
-        font-size: 15vw; /* Smaller on mobile but still big */
-        text-align: center;
-        margin: 40px 0;
-    }
-    
-    .corner-br {
-        text-align: left;
+        font-size: clamp(3rem, 10vw, 6rem);
     }
 }
+
 
 
 /* Mobile Toggle */
