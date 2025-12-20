@@ -546,7 +546,7 @@ h1, h2, h3, h4, h5, h6 {
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr) !important; /* Force 3 columns ALWAYS */
-    gap: 20px; /* Reduced gap to make cards smaller */
+    gap: 15px; /* Tighter gap */
 }
 
 /* Remove responsive behavior for columns as requested */
@@ -567,7 +567,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .project-card {
     background: var(--surface-color);
-    padding: 24px; /* Added padding inside card as requested */
+    padding: 20px; /* Slightly reduced padding */
     border: 1px solid var(--text-primary); /* Distinct solid border */
     border-radius: 0; /* Brutalist - sharp corners */
     transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
@@ -576,17 +576,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .project-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 8px 8px 0 var(--text-primary); /* Solid shadow */
+    transform: translateY(-5px); /* Less movement */
+    box-shadow: 6px 6px 0 var(--text-primary); /* Solid shadow */
 }
 
 .project-image {
     width: 100%;
-    aspect-ratio: 3/2; /* Landscape 3:2 */
+    aspect-ratio: 2/1; /* Panoramic/Shorter to make it 'smaller' */
     overflow: hidden;
     border: 1px solid var(--text-secondary); /* Inner border for image */
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     position: relative;
+    background: #000; /* Fallback */
 }
 
 .project-thumb {
@@ -616,15 +617,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .project-title {
-    font-size: 1.75rem;
+    font-size: 1.4rem; /* Smaller title */
     font-weight: 800;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     background: none;
-    -webkit-text-fill-color: var(--text-primary);
-    color: var(--text-primary);
+    color: var(--text-primary) !important; /* Force Theme Color */
     text-transform: uppercase;
     line-height: 1.1;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
 }
 
 .project-desc {
