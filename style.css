@@ -256,7 +256,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Hero Poster Section Global */
 .hero-poster {
     min-height: 100vh;
-    padding: 220px 40px 60px 40px; /* Global fix for header overlap */
+    padding: 10px 40px 60px 40px; /* Global fix for header overlap */
     position: relative;
     display: flex;
     flex-direction: column;
@@ -1139,7 +1139,7 @@ body:not(.light-mode) .timeline-item:hover .timeline-title {
 /* Footer Poster */
 .footer-poster {
     background: var(--bg-color);
-    padding: 120px 0 0 0;
+    padding: 120px 0 80px 0; /* Added bottom padding */
     color: var(--text-primary);
     border-top: 2px solid var(--text-primary);
     overflow: hidden;
