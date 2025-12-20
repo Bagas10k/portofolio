@@ -289,7 +289,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     max-width: var(--container-width);
     height: 100%;
-    padding: 50px 60px 30px 60px; /* Optimized padding */
+    padding: 90px 60px 30px 60px; /* Optimized padding */
     display: grid;
     grid-template-rows: minmax(50px, auto) 1fr minmax(auto, 25%); /* Give more room to center */
     grid-template-columns: 1fr 1fr;
