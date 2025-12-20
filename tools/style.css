@@ -1,0 +1,350 @@
+/* Tools Landing Page Specific Styles */
+/* Inherits variables and base styles from ../style.css */
+
+/* Tools Hero Section */
+.tools-hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 60px 60px;
+    position: relative;
+    background: var(--bg-color);
+    overflow: hidden;
+}
+
+.tools-hero-container {
+    max-width: var(--container-width);
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.hero-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tools-display-text {
+    font-size: clamp(4rem, 12vw, 10rem);
+    line-height: 0.9;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    margin: 0;
+}
+
+.tools-subtitle {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    color: var(--text-secondary);
+    max-width: 600px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.scroll-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 20px;
+}
+
+.scroll-indicator .arrow-down {
+    font-size: 1.5rem;
+    animation: bounce 2s infinite;
+}
+
+/* Tools Grid Section */
+.tools-section {
+    padding: 80px 60px;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 60px;
+}
+
+/* Tool Card */
+.tool-card {
+    background: var(--surface-color);
+    border: 2px solid var(--text-primary);
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), rgba(189, 0, 255, 0.05));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.tool-card:hover::before {
+    opacity: 1;
+}
+
+.tool-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 8px 8px 0 var(--text-primary);
+    border-color: var(--accent-primary);
+}
+
+.tool-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background: var(--bg-color);
+    border: 2px solid var(--text-primary);
+    border-radius: 50%;
+    transition: all 0.4s ease;
+}
+
+.tool-card:hover .tool-icon {
+    transform: rotate(10deg) scale(1.1);
+    border-color: var(--accent-primary);
+}
+
+.tool-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tool-name {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.tool-description {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.tool-status {
+    display: inline-block;
+    padding: 6px 14px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 50px;
+    border: 1px solid;
+}
+
+.status-available {
+    background: rgba(0, 255, 127, 0.1);
+    border-color: #00ff7f;
+    color: #00ff7f;
+}
+
+.status-coming-soon {
+    background: rgba(255, 165, 0, 0.1);
+    border-color: #ffa500;
+    color: #ffa500;
+}
+
+.tool-cta {
+    margin-top: auto;
+    padding: 12px 28px;
+    background: transparent;
+    border: 2px solid var(--text-primary);
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.tool-cta:hover {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    transform: scale(1.05);
+}
+
+.tool-cta:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Coming Soon Section */
+.coming-soon-section {
+    padding: 120px 60px;
+    text-align: center;
+}
+
+.coming-soon-content {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.coming-soon-text {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+}
+
+.btn-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 16px 36px;
+    background: transparent;
+    border: 2px solid var(--text-primary);
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-link:hover {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tools-hero {
+        padding: 100px 30px 40px;
+    }
+    
+    .tools-display-text {
+        font-size: clamp(3rem, 10vw, 5rem);
+    }
+    
+    .tools-subtitle {
+        font-size: 1rem;
+    }
+    
+    .tools-section {
+        padding: 60px 30px;
+    }
+    
+    .tools-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .tool-card {
+        padding: 30px 25px;
+    }
+    
+    .tool-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+    
+    .tool-name {
+        font-size: 1.3rem;
+    }
+    
+    .coming-soon-section {
+        padding: 80px 30px;
+    }
+    
+    .display-medium {
+        font-size: clamp(2.5rem, 8vw, 4rem);
+    }
+    
+    .coming-soon-text {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tools-display-text {
+        font-size: 2.5rem;
+    }
+    
+    .outline-text {
+        -webkit-text-stroke: 1.5px var(--text-primary);
+    }
+    
+    .tool-card {
+        padding: 25px 20px;
+    }
+    
+    .btn-link {
+        padding: 14px 28px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animation for scroll reveal */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
