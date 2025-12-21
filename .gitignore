@@ -1,0 +1,47 @@
+# Sensitive Files - DO NOT UPLOAD TO GITHUB
+reset_admin_password.php
+migrate_password.php
+
+# Configuration Files with Credentials
+api/config.php
+
+# Database Files
+*.sql
+database.sql
+
+# Documentation (can be uploaded but optional)
+SECURITY.md
+SETUP_PASSWORD.md
+README_PASSWORD.md
+
+# Uploaded Images (too large for GitHub)
+assets/images/projects/*
+!assets/images/projects/.gitkeep
+
+# Data Files
+data/*.json
+
+# Environment Files
+.env
+.env.local
+
+# System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+error_log
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
