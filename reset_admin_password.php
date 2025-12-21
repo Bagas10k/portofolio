@@ -1,0 +1,206 @@
+<?php
+/**
+ * Emergency Admin Password Reset Tool
+ * Use this ONLY when you forgot your admin password
+ * 
+ * SECURITY: This file should be deleted after use or protected with .htaccess
+ * Access: http://yourwebsite.com/reset_admin_password.php
+ */
+
+// SECURITY KEY - Change this to something only you know!
+define('RESET_SECURITY_KEY', 'BAGAS_RESET_2025_SECRET');
+
+require_once 'api/config.php';
+
+$message = '';
+$messageType = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $securityKey = $_POST['security_key'] ?? '';
+    $newPassword = $_POST['new_password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+    
+    // Verify security key
+    if ($securityKey !== RESET_SECURITY_KEY) {
+        $message = 'Invalid security key!';
+        $messageType = 'error';
+    }
+    // Check password match
+    elseif ($newPassword !== $confirmPassword) {
+        $message = 'Passwords do not match!';
+        $messageType = 'error';
+    }
+    // Check password length
+    elseif (strlen($newPassword) < 8) {
+        $message = 'Password must be at least 8 characters!';
+        $messageType = 'error';
+    }
+    else {
+        // Hash new password
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        
+        // Update admin password
+        $stmt = $conn->prepare("UPDATE admin SET password_hash = ?, updated_at = NOW() WHERE username = 'admin'");
+        $stmt->bind_param("s", $hashedPassword);
+        
+        if ($stmt->execute() && $stmt->affected_rows > 0) {
+            $message = 'Password reset successful! You can now login with your new password.';
+            $messageType = 'success';
+        } else {
+            $message = 'Failed to reset password. Admin user might not exist.';
+            $messageType = 'error';
+        }
+        
+        $stmt->close();
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Password Reset</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid #ffc107;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+        .security-note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #666;
+        }
+        .security-note strong {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Emergency Password Reset</h1>
+        <div class="warning">
+            ⚠️ This is an emergency tool. Only use this if you forgot your admin password.
+        </div>
+        
+        <?php if ($message): ?>
+            <div class="message <?= $messageType ?>">
+                <?= htmlspecialchars($message) ?>
+            </div>
+        <?php endif; ?>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="security_key">Security Key *</label>
+                <input type="text" id="security_key" name="security_key" required placeholder="Enter security key">
+                <div class="hint">Check RESET_SECURITY_KEY in this file's source code</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="new_password">New Password *</label>
+                <input type="password" id="new_password" name="new_password" required placeholder="Minimum 8 characters">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password *</label>
+                <input type="password" id="confirm_password" name="confirm_password" required placeholder="Confirm your password">
+            </div>
+            
+            <button type="submit">Reset Password</button>
+        </form>
+        
+        <div class="security-note">
+            <strong>IMPORTANT:</strong> After successfully resetting your password, please DELETE this file (reset_admin_password.php) from your server for security reasons.
+        </div>
+    </div>
+</body>
+</html>

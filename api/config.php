@@ -8,6 +8,8 @@ define('DB_PASS', 'bagas123');     // Change to your DB Password
 define('DB_NAME', 'bags_portofolio');
 
 // --- ADMIN PASSWORD ---
+// DEPRECATED: Remove this after running migrate_password.php and confirming login works
+// Password is now stored securely in database with hashing
 define('ADMIN_PASSWORD', 'Bagassaputra83');
 
 define('UPLOAD_DIR', __DIR__ . '/../assets/images/projects/');

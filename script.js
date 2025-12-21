@@ -162,8 +162,31 @@ async function loadProjects() {
             return;
         }
 
+        // Always clear grid first
+        grid.innerHTML = '';
+        
+        // Add special "Tools" card first
+        const toolsCard = document.createElement('div');
+        toolsCard.className = 'project-card tools-card animate-on-scroll';
+        toolsCard.innerHTML = `
+            <div class="project-image tools-image">
+                <div class="tools-icon-wrapper">
+                    <span class="tools-icon">🛠️</span>
+                </div>
+            </div>
+            <div class="project-content">
+                <div class="project-tags">
+                    <span style="background: rgba(255, 165, 0, 0.2); color: #ffa500; border-color: #ffa500;">WORK IN PROGRESS</span>
+                </div>
+                <h3 class="project-title">Tools & Utilities</h3>
+                <p class="project-desc">Collection of web tools and utilities I'm currently working on</p>
+                <a href="tools/index.html" class="project-link">Explore Tools <i class="fas fa-arrow-right"></i></a>
+            </div>
+        `;
+        grid.appendChild(toolsCard);
+        
+        // Add regular projects
         if (projects.length > 0) {
-            grid.innerHTML = '';
             projects.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'project-card animate-on-scroll';
@@ -182,8 +205,6 @@ async function loadProjects() {
                 `;
                 grid.appendChild(card);
             });
-        } else {
-            grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">No projects found. Add one in the dashboard!</p>';
         }
 
         // Re-run observer for new elements
