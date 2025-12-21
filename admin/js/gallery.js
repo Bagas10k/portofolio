@@ -96,7 +96,12 @@ async function loadGallery() {
                 grid.appendChild(item);
             });
         } else {
-            container.innerHTML = '<div class="empty-state"><p>📭 No images yet. Upload some!</p></div>';
+            container.innerHTML = `<div class="empty-state">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 20px; opacity: 0.5;">
+                    <path d="M4 16L8.586 11.414C9.367 10.633 10.633 10.633 11.414 11.414L16 16M14 14L15.586 12.414C16.367 11.633 17.633 11.633 18.414 12.414L20 14M14 8H14.01M6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p>No images yet. Upload some!</p>
+            </div>`;
         }
     } catch (err) {
         console.error('Error loading gallery:', err);
@@ -118,9 +123,18 @@ function createGalleryItem(img) {
             <div class="gallery-size">${filesize}</div>
         </div>
         <div class="gallery-actions">
-            <button class="btn-copy" onclick="copyURL('${url}')">📋 Copy</button>
+            <button class="btn-copy" onclick="copyURL('${url}')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 4px;">
+                    <path d="M8 4V16C8 17.1046 8.89543 18 10 18H18M8 4C8 2.89543 8.89543 2 10 2H15.1716C15.702 2 16.2107 2.21071 16.5858 2.58579L19.4142 5.41421C19.7893 5.78929 20 6.29799 20 6.82843V16C20 17.1046 19.1046 18 18 18M8 4H6C4.89543 4 4 4.89543 4 6V20C4 21.1046 4.89543 22 6 22H14C15.1046 22 16 21.1046 16 20V18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Copy
+            </button>
             <button class="btn-avatar" onclick="useAsAvatar('${img.filepath}', ${img.id})" style="background: var(--primary); color: var(--bg-primary);">👤 Avatar</button>
-            <button class="btn-delete" onclick="deleteImage(${img.id})">🗑️</button>
+            <button class="btn-delete" onclick="deleteImage(${img.id})">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align: middle;">
+                    <path d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772 3 9 3.44772 9 4V7M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
         </div>
     `;
     
