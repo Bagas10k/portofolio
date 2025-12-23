@@ -19,8 +19,19 @@ if ($method === 'GET') {
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 // Map DB columns to Frontend expectations
-                $row['tags'] = !empty($row['tech_stack']) ? explode(',', $row['tech_stack']) : [];
-                $row['link'] = !empty($row['project_url']) ? $row['project_url'] : '#';
+                // Tags: check both 'tags' and 'tech_stack' columns
+                if (!empty($row['tags'])) {
+                    $row['tags'] = explode(',', $row['tags']);
+                } elseif (!empty($row['tech_stack'])) {
+                    $row['tags'] = explode(',', $row['tech_stack']);
+                } else {
+                    $row['tags'] = [];
+                }
+                
+                // Link: use 'link' column directly (from upload.php), fallback to 'project_url'
+                if (empty($row['link']) || $row['link'] === '#') {
+                    $row['link'] = !empty($row['project_url']) ? $row['project_url'] : '#';
+                }
                 
                 // Add github link if exists
                 if (!empty($row['github_url'])) {

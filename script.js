@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadProfile();
     loadSkills();
     if(typeof loadEducation === 'function') loadEducation(); 
+    loadExperience();
     loadProjects();
 
     // Mobile Menu Toggle
@@ -164,26 +165,6 @@ async function loadProjects() {
 
         // Always clear grid first
         grid.innerHTML = '';
-        
-        // Add special "Tools" card first
-        const toolsCard = document.createElement('div');
-        toolsCard.className = 'project-card tools-card animate-on-scroll';
-        toolsCard.innerHTML = `
-            <div class="project-image tools-image">
-                <div class="tools-icon-wrapper">
-                    <span class="tools-icon">🛠️</span>
-                </div>
-            </div>
-            <div class="project-content">
-                <div class="project-tags">
-                    <span style="background: rgba(255, 165, 0, 0.2); color: #ffa500; border-color: #ffa500;">WORK IN PROGRESS</span>
-                </div>
-                <h3 class="project-title">Tools & Utilities</h3>
-                <p class="project-desc">Collection of web tools and utilities I'm currently working on</p>
-                <a href="tools/index.html" class="project-link">Explore Tools <i class="fas fa-arrow-right"></i></a>
-            </div>
-        `;
-        grid.appendChild(toolsCard);
         
         // Add regular projects
         if (projects.length > 0) {
@@ -370,5 +351,47 @@ async function loadEducation() {
     catch (err) {
         console.error('Error loading education:', err);
         container.innerHTML = '<p>Error loading education history.</p>';
+    }
+}
+
+async function loadExperience() {
+    const container = document.getElementById('experienceTimeline');
+    if (!container) return;
+
+    try {
+        const res = await fetch('api/experiences.php?t=' + new Date().getTime());
+        const json = await res.json();
+        
+        if (json.success) {
+            const data = json.data;
+            if (data.length === 0) {
+                container.innerHTML = '<p>No experience history available.</p>';
+                return;
+            }
+
+            container.innerHTML = data.map(exp => `
+                <div class="timeline-item animate-on-scroll">
+                    <div class="date-badge">${exp.year_start} - ${exp.year_end}</div>
+                    <h3 class="timeline-title">${exp.organization}</h3>
+                    <div class="timeline-subtitle">${exp.position}</div>
+                    ${exp.description ? `<p class="timeline-desc">${exp.description}</p>` : ''}
+                </div>
+            `).join('');
+            
+            // Re-observe for animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            container.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
+        }
+    } 
+    catch (err) {
+        console.error('Error loading experience:', err);
+        container.innerHTML = '<p>Error loading experience history.</p>';
     }
 }
