@@ -69,4 +69,35 @@ if ($method === 'DELETE') {
     }
     exit;
 }
+
+// PUT - Update experience
+if ($method === 'PUT') {
+    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+        echo json_encode(['success'=>false, 'message'=>'Unauthorized']);
+        exit;
+    }
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    $id = $input['id'] ?? 0;
+    $organization = $input['organization'] ?? '';
+    $position = $input['position'] ?? '';
+    $year_start = $input['year_start'] ?? '';
+    $year_end = $input['year_end'] ?? 'Present';
+    $description = $input['description'] ?? '';
+
+    if (!$id || !$organization || !$position || !$year_start) {
+        echo json_encode(['success'=>false, 'message'=>'Missing required fields']);
+        exit;
+    }
+
+    $stmt = $conn->prepare("UPDATE experiences SET organization=?, position=?, year_start=?, year_end=?, description=? WHERE id=?");
+    $stmt->bind_param("sssssi", $organization, $position, $year_start, $year_end, $description, $id);
+    
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => $stmt->error]);
+    }
+    exit;
+}
 ?>
