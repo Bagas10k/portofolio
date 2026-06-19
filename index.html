@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Showcase & Blog Personal Bagas - Galeri Proyek Web, Desain, Foto, Video, dan Blog." />
+  <title>Bagas Showcase & Blog ⬡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=1.1" />
+  <!-- Lucide Icons CDN for professional icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Three.js CDN for jaw-dropping 3D animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- AMBIENT GLOW ORBS -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- CUSTOM MOUSE CURSOR -->
+  <div class="custom-cursor-dot" id="customCursorDot"></div>
+  <div class="custom-cursor-ring" id="customCursorRing"></div>
+
+  <!-- PARTICLE CANVAS (Now handled by WebGL/Three.js) -->
+  <div id="canvas3d-container"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#/" class="nav-logo">
+        <span class="logo-icon">
+          <i data-lucide="hexagon"></i>
+        </span>
+        <span class="logo-text">Bagas.show</span>
+      </a>
+      
+      <div class="nav-links" id="navLinks">
+        <a href="#/" class="nav-link active" data-path="/">Beranda</a>
+        <a href="#/projects" class="nav-link" data-path="/projects">Galeri Proyek</a>
+        <a href="#/tools" class="nav-link" data-path="/tools">Alat Desain</a>
+        <a href="#/blog" class="nav-link" data-path="/blog">Blog</a>
+        <a href="#/about" class="nav-link" data-path="/about">Tentang</a>
+        <a href="#/contact" class="nav-link" data-path="/contact">Hubungi</a>
+        <a href="#/notes" class="nav-link" data-path="/notes" id="navNotesBtn" style="display: none; border: 1px dashed rgba(129, 140, 248, 0.4); background: rgba(129, 140, 248, 0.05); color: var(--primary); font-weight: bold; border-radius: 8px; padding: 4px 10px; margin-right: 6px; align-items: center; gap: 4px;">
+          <i data-lucide="notebook" class="icon-xs"></i> Catatan
+        </a>
+        <a href="#/admin" class="nav-link nav-admin-badge" data-path="/admin" id="navAdminBtn">
+          <i data-lucide="shield" class="icon-sm"></i> Admin
+        </a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#/" class="nav-link" data-path="/">Beranda</a>
+      <a href="#/projects" class="nav-link" data-path="/projects">Galeri Proyek</a>
+      <a href="#/tools" class="nav-link" data-path="/tools">Alat Desain</a>
+      <a href="#/blog" class="nav-link" data-path="/blog">Blog</a>
+      <a href="#/about" class="nav-link" data-path="/about">Tentang</a>
+      <a href="#/contact" class="nav-link" data-path="/contact">Hubungi</a>
+      <a href="#/notes" class="nav-link" data-path="/notes" id="navNotesMobileBtn" style="display: none; color: var(--primary); font-weight: bold; align-items: center; gap: 6px;">
+        <i data-lucide="notebook" class="icon-sm"></i> Catatan Admin
+      </a>
+      <a href="#/admin" class="nav-link" data-path="/admin">
+        <i data-lucide="shield" class="icon-sm"></i> Admin
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER (ROUTER VIEW) -->
+  <main id="app-router-view" class="fade-in-section">
+    <!-- Dynamic content will be injected here -->
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <a href="#/" class="nav-logo">
+            <span class="logo-icon"><i data-lucide="hexagon"></i></span>
+            <span class="logo-text">Bagas.show</span>
+          </a>
+          <p class="footer-tagline">Showcase modern untuk program, web, media, dan pemikiran kreatif.</p>
+        </div>
+        <div class="footer-right">
+          <p class="footer-copy">© <span id="footerYear">2026</span> Bagas. Hak Cipta Dilindungi.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX / MEDIA MODALS -->
+  <!-- Image Lightbox -->
+  <div class="lightbox-overlay" id="lightboxModal" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(null)"><i data-lucide="x"></i></button>
+    <div class="lightbox-content">
+      <img src="" id="lightboxImg" alt="Lightbox Image" />
+      <div class="lightbox-caption" id="lightboxCaption">Caption text</div>
+    </div>
+  </div>
+
+  <!-- Video Player Modal -->
+  <div class="lightbox-overlay" id="videoModal" onclick="closeVideoModal(event)">
+    <button class="lightbox-close" onclick="closeVideoModal(null)"><i data-lucide="x"></i></button>
+    <div class="lightbox-content video-content-wrapper">
+      <div class="video-container" id="videoContainer">
+        <!-- Video element or YouTube iframe injected here -->
+      </div>
+      <div class="lightbox-caption" id="videoCaption">Video Caption</div>
+    </div>
+  </div>
+
+  <!-- GLOBAL TOAST NOTIFICATION -->
+  <div class="toast" id="toast">
+    <div class="toast-content">
+      <i id="toastIcon" data-lucide="info"></i>
+      <span id="toastMessage">Pesan Toast</span>
+    </div>
+  </div>
+
+  <!-- THEME RIPPLE OVERLAY -->
+  <div class="theme-ripple-overlay" id="themeRippleOverlay"></div>
+
+  <!-- FLOATING THEME TOGGLE FAB -->
+  <button class="theme-toggle-fab" id="themeToggleBtn" onclick="triggerThemeToggle(event)" aria-label="Ganti Tema">
+    <i data-lucide="sun" id="themeIconSun" class="icon-sm"></i>
+    <i data-lucide="moon" id="themeIconMoon" class="icon-sm" style="display:none;"></i>
+  </button>
+
+  <!-- Scripts -->
+  <script src="store.js?v=1.1"></script>
+  <script src="app.js?v=1.1"></script>
+</body>
+</html>

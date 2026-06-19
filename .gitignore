@@ -1,0 +1,7 @@
+node_modules/
+.wwebjs_auth/
+credentials.json
+notes.json
+bot_config.json
+bot_memories.json
+*.log
