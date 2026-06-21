@@ -1396,17 +1396,19 @@ window.stopAssistantPolling = function() {
 
 async function fetchAssistantData() {
   try {
-    const [statusRes, logsRes, memoriesRes] = await Promise.all([
+    const [statusRes, logsRes, memoriesRes, waMsgsRes] = await Promise.all([
       fetch('/api/status'),
       fetch('/api/logs'),
-      fetch('/api/memories')
+      fetch('/api/memories'),
+      fetch('/api/wa/messages')
     ]);
     
-    if (!statusRes.ok || !logsRes.ok || !memoriesRes.ok) return;
+    if (!statusRes.ok || !logsRes.ok || !memoriesRes.ok || !waMsgsRes.ok) return;
     
     const statusData = await statusRes.json();
     const logsData = await logsRes.json();
     const memoriesData = await memoriesRes.json();
+    const waMsgsData = await waMsgsRes.json();
     
     // Store in window cache
     window.currentBotConfig = statusData;
@@ -1512,6 +1514,33 @@ async function fetchAssistantData() {
       if (memoriesTable.innerHTML !== targetHtml) {
         memoriesTable.innerHTML = targetHtml;
         lucide.createIcons();
+      }
+    }
+
+    // 4. WA Messages Table UI
+    const waMessagesTable = document.getElementById('botWaMessagesTableBody');
+    if (waMessagesTable) {
+      const newHtml = waMsgsData.slice(0, 10).map(m => {
+        const isIgnored = m.status === 'DIABAIKAN';
+        const statusBadge = `<span class="card-status ${isIgnored ? 'status-ongoing' : 'status-completed'}" style="padding:2px 6px; font-size:0.65rem;">${m.status}</span>`;
+        return `
+          <tr>
+            <td style="font-family:'JetBrains Mono'; font-size:0.72rem; color:var(--text-muted);">${m.time}</td>
+            <td>
+              <strong style="color:var(--text-primary); font-size:0.75rem;">+${m.senderNumber}</strong>
+              <div style="font-size:0.65rem; color:var(--text-muted); font-family:'JetBrains Mono';">${escHtml(m.from)}</div>
+            </td>
+            <td style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escHtml(m.body)}">${escHtml(m.body)}</td>
+            <td>${statusBadge}</td>
+          </tr>
+        `;
+      }).join('');
+      
+      const emptyHtml = `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">Belum ada pesan WA masuk.</td></tr>`;
+      
+      const targetHtml = waMsgsData.length === 0 ? emptyHtml : newHtml;
+      if (waMessagesTable.innerHTML !== targetHtml) {
+        waMessagesTable.innerHTML = targetHtml;
       }
     }
   } catch (err) {
@@ -1653,6 +1682,28 @@ function renderAdminAssistant(content) {
             <input type="text" id="newMemoryFact" class="form-input" style="font-size:0.85rem; padding:8px 12px;" placeholder="Ajarkan memori manual (cth: wifi password kantor)..." required />
             <button type="submit" class="btn btn-secondary btn-sm" style="padding:0 16px;"><i data-lucide="plus" class="icon-xs"></i></button>
           </form>
+        </div>
+
+        <div style="background:var(--bg-surface); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-light);">
+          <h4 style="margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+            <i data-lucide="message-square" class="icon-sm"></i> Pesan Masuk WA Terbaru (Terakhir 10)
+          </h4>
+          
+          <div class="table-wrapper" style="max-height:180px; overflow-y:auto;">
+            <table class="admin-table" style="font-size:0.8rem;">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Nomor Pengirim</th>
+                  <th>Isi Pesan</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="botWaMessagesTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </div>

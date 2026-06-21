@@ -85,6 +85,7 @@ function saveMemories(memories) {
 let logs = [
   { time: '08:00:00', type: 'SYSTEM', text: 'Server Node.js berjalan. Mempersiapkan client WhatsApp Web...' }
 ];
+let incomingWaMessages = [];
 
 function addLog(type, text) {
   const time = new Date().toTimeString().split(' ')[0];
@@ -161,13 +162,28 @@ function initializeWhatsapp() {
     
     // Format Bos number to match
     const formattedBos = config.bosNumber.replace(/\D/g, '');
+    const isBos = (senderNumber === formattedBos);
+
+    // Save to incoming messages catalog
+    incomingWaMessages.unshift({
+      time: new Date().toTimeString().split(' ')[0],
+      from: rawSender,
+      senderNumber: senderNumber,
+      body: msg.body,
+      status: isBos ? 'DIPROSES (BOS)' : 'DIABAIKAN'
+    });
+    if (incomingWaMessages.length > 20) {
+      incomingWaMessages.pop();
+    }
+
+    addLog('INCOMING', `Pesan masuk dari ${rawSender}: "${msg.body}"`);
     
     // Check if sender is indeed the Boss
-    if (senderNumber !== formattedBos) {
+    if (!isBos) {
+      addLog('SYSTEM', `Pesan dari ${senderNumber} diabaikan karena tidak cocok dengan Nomor Bos (+${formattedBos}).`);
       return; // Ignore messages from others to protect privacy
     }
 
-    addLog('INCOMING', `Chat WA Bos: "${msg.body}"`);
     try {
       const result = await handleMessageLogic(msg.body, 'WA');
       msg.reply(result.reply);
@@ -382,6 +398,11 @@ app.delete('/api/memories/:id', (req, res) => {
 // Get Logs
 app.get('/api/logs', (req, res) => {
   res.json(logs);
+});
+
+// Get WA Messages
+app.get('/api/wa/messages', (req, res) => {
+  res.json(incomingWaMessages);
 });
 
 // Simulate Log Trigger
